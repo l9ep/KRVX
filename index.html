@@ -15,16 +15,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .logo{font-size:11px;letter-spacing:.3em;color:var(--p);font-family:'DM Mono',monospace;text-transform:uppercase;margin-bottom:20px}
 h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacing:-2px;background:linear-gradient(135deg,#fff 0%,var(--p2) 60%,var(--p) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .sub{margin-top:16px;font-size:14px;color:var(--muted);font-family:'DM Mono',monospace}
-.drop-zone{border:1px solid rgba(155,48,255,.3);border-radius:16px;padding:48px 24px;text-align:center;background:rgba(155,48,255,.04);transition:all .25s ease;position:relative;overflow:hidden;margin-top:40px}
+.drop-zone{border:1px solid rgba(155,48,255,.3);border-radius:16px;padding:48px 24px;text-align:center;background:rgba(155,48,255,.04);transition:all .25s ease;position:relative;overflow:hidden;margin-top:40px;cursor:pointer}
 .drop-zone::before{content:'';position:absolute;inset:-1px;border-radius:16px;background:linear-gradient(135deg,rgba(155,48,255,.3),transparent,rgba(106,15,214,.2));opacity:0;transition:opacity .25s}
 .drop-zone:hover::before,.drop-zone.drag-over::before{opacity:1}
 .drop-zone:hover,.drop-zone.drag-over{border-color:var(--p);background:rgba(155,48,255,.08)}
 .drop-icon{width:56px;height:56px;margin:0 auto 20px;background:rgba(155,48,255,.12);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px}
 .drop-title{font-size:18px;font-weight:700;margin-bottom:8px}
 .drop-sub{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:24px}
-.browse-label{display:inline-block;padding:12px 28px;background:var(--p);color:#fff;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s}
-.browse-label:hover{background:var(--p2);box-shadow:0 8px 24px rgba(155,48,255,.35)}
-#fileInput{position:absolute;width:1px;height:1px;opacity:0}
+.browse-btn{display:inline-block;padding:12px 28px;background:var(--p);color:#fff;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;border:none;position:relative;z-index:2}
+.browse-btn:hover{background:var(--p2);box-shadow:0 8px 24px rgba(155,48,255,.35)}
+#fileInput{display:none}
 .mobile-tip{margin-top:16px;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace}
 
 /* Page 2 */
@@ -94,7 +94,8 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
       <div class="drop-icon">🎬</div>
       <div class="drop-title">Drop your video here</div>
       <div class="drop-sub">MP4, MOV, AVI, WEBM</div>
-      <label class="browse-label" for="fileInput">Browse File</label>
+      <!-- FIX: replaced <label for="fileInput"> with a real <button> that calls fileInput.click() -->
+      <button class="browse-btn" id="browseBtn" type="button">Browse File</button>
       <input type="file" id="fileInput" accept="video/*">
       <div class="mobile-tip">📱 On mobile — tap Browse to pick from gallery or files</div>
     </div>
@@ -193,10 +194,11 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
 const { FFmpeg } = FFmpegWASM;
 const { fetchFile, toBlobURL } = FFmpegUtil;
 
+// FIX: use -2 for width so aspect ratio is preserved, no distortion on non-16:9 videos
 const PRESETS = {
-  tiktok: { res: '3840:2160', crf: '15', bitrate: '50M', audio: '320k', label: '4K · 50Mbps' },
-  balanced: { res: '2560:1440', crf: '18', bitrate: '25M', audio: '192k', label: '2K · 25Mbps' },
-  ultra: { res: '3840:2160', crf: '12', bitrate: '80M', audio: '320k', label: '4K · 80Mbps' }
+  tiktok:   { res: '-2:2160', crf: '15', bitrate: '50M', audio: '320k', label: '4K · 50Mbps' },
+  balanced: { res: '-2:1440', crf: '18', bitrate: '25M', audio: '192k', label: '2K · 25Mbps' },
+  ultra:    { res: '-2:2160', crf: '12', bitrate: '80M', audio: '320k', label: '4K · 80Mbps' }
 };
 
 let ffmpeg = null;
@@ -204,25 +206,26 @@ let selectedFile = null;
 let selectedPreset = 'tiktok';
 let outputUrl = null;
 
-const page1 = document.getElementById('page1');
-const page2 = document.getElementById('page2');
-const fileInput = document.getElementById('fileInput');
-const dropZone = document.getElementById('dropZone');
-const backBtn = document.getElementById('backBtn');
+const page1       = document.getElementById('page1');
+const page2       = document.getElementById('page2');
+const fileInput   = document.getElementById('fileInput');
+const browseBtn   = document.getElementById('browseBtn');
+const dropZone    = document.getElementById('dropZone');
+const backBtn     = document.getElementById('backBtn');
 const previewVideo = document.getElementById('previewVideo');
-const fileBadge = document.getElementById('fileBadge');
-const processBtn = document.getElementById('processBtn');
+const fileBadge   = document.getElementById('fileBadge');
+const processBtn  = document.getElementById('processBtn');
 const progressWrap = document.getElementById('progressWrap');
 const progressStatus = document.getElementById('progressStatus');
 const progressPct = document.getElementById('progressPct');
 const progressFill = document.getElementById('progressFill');
-const logBox = document.getElementById('logBox');
-const errorMsg = document.getElementById('errorMsg');
-const resultWrap = document.getElementById('resultWrap');
-const resultSub = document.getElementById('resultSub');
+const logBox      = document.getElementById('logBox');
+const errorMsg    = document.getElementById('errorMsg');
+const resultWrap  = document.getElementById('resultWrap');
+const resultSub   = document.getElementById('resultSub');
 const downloadBtn = document.getElementById('downloadBtn');
-const againBtn = document.getElementById('againBtn');
-const resTag = document.getElementById('resTag');
+const againBtn    = document.getElementById('againBtn');
+const resTag      = document.getElementById('resTag');
 
 function formatBytes(b) {
   return b < 1048576 ? (b/1024).toFixed(1)+' KB' : (b/1048576).toFixed(1)+' MB';
@@ -235,7 +238,15 @@ function goPage(n) {
 }
 
 function setFile(file) {
-  if (!file || !file.type.startsWith('video/')) return;
+  if (!file) return;
+  // FIX: also accept video/quicktime and be more permissive — check by extension if MIME missing
+  const validTypes = ['video/mp4','video/quicktime','video/x-msvideo','video/webm','video/avi','video/mov'];
+  const ext = file.name.split('.').pop().toLowerCase();
+  const validExts = ['mp4','mov','avi','webm','mkv'];
+  if (!file.type.startsWith('video/') && !validExts.includes(ext)) {
+    alert('Please select a valid video file (MP4, MOV, AVI, WEBM).');
+    return;
+  }
   selectedFile = file;
   const url = URL.createObjectURL(file);
   previewVideo.src = url;
@@ -247,16 +258,45 @@ function setFile(file) {
   goPage(2);
 }
 
-fileInput.addEventListener('change', e => { if (e.target.files[0]) setFile(e.target.files[0]); });
+// FIX: Browse button directly triggers fileInput.click() — no <label> needed
+browseBtn.addEventListener('click', (e) => {
+  e.stopPropagation(); // prevent drop zone click from also firing
+  fileInput.value = ''; // reset so same file can be re-selected
+  fileInput.click();
+});
+
+fileInput.addEventListener('change', e => {
+  if (e.target.files[0]) setFile(e.target.files[0]);
+});
+
+// FIX: drop zone click should only fire if user didn't click the button
+dropZone.addEventListener('click', (e) => {
+  if (e.target === browseBtn) return;
+  fileInput.value = '';
+  fileInput.click();
+});
+
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag-over'); if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]); });
-
-backBtn.addEventListener('click', () => {
-  fileInput.value = '';
-  if (outputUrl) { URL.revokeObjectURL(outputUrl); outputUrl = null; }
-  goPage(1);
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
 });
+
+function resetToPage1() {
+  fileInput.value = '';
+  if (previewVideo.src) {
+    URL.revokeObjectURL(previewVideo.src);
+    previewVideo.src = '';
+  }
+  if (outputUrl) { URL.revokeObjectURL(outputUrl); outputUrl = null; }
+  selectedFile = null;
+  goPage(1);
+}
+
+backBtn.addEventListener('click', resetToPage1);
+againBtn.addEventListener('click', resetToPage1);
 
 document.querySelectorAll('.preset').forEach(el => {
   el.addEventListener('click', () => {
@@ -264,12 +304,6 @@ document.querySelectorAll('.preset').forEach(el => {
     el.classList.add('selected');
     selectedPreset = el.dataset.preset;
   });
-});
-
-againBtn.addEventListener('click', () => {
-  fileInput.value = '';
-  if (outputUrl) { URL.revokeObjectURL(outputUrl); outputUrl = null; }
-  goPage(1);
 });
 
 function log(msg) { logBox.innerHTML += msg + '\n'; logBox.scrollTop = logBox.scrollHeight; }
@@ -307,6 +341,7 @@ processBtn.addEventListener('click', async () => {
     const p = PRESETS[selectedPreset];
     const ext = selectedFile.name.split('.').pop().toLowerCase() || 'mp4';
     const inputName = 'input.' + ext;
+    // FIX: output is always .mp4
     const outputName = 'output.mp4';
 
     setProgress(8, 'Reading file...');
@@ -315,6 +350,7 @@ processBtn.addEventListener('click', async () => {
 
     await ffmpeg.exec([
       '-i', inputName,
+      // FIX: scale preserves aspect ratio with -2:height, then sharpen
       '-vf', `scale=${p.res}:flags=lanczos,unsharp=5:5:1.0:3:3:0.5`,
       '-c:v', 'libx264',
       '-crf', p.crf,
@@ -337,12 +373,15 @@ processBtn.addEventListener('click', async () => {
 
     const outMB = (blob.size / 1048576).toFixed(1);
     resultSub.textContent = p.label + ' · ' + outMB + ' MB — ready to upload';
-    resTag.textContent = p.res.includes('3840') ? '4K H.264' : '2K H.264';
+    // FIX: check res label correctly for -2:2160 vs -2:1440
+    resTag.textContent = p.res.includes('2160') ? '4K H.264' : '2K H.264';
 
+    // FIX: download filename always ends in .mp4
     downloadBtn.onclick = () => {
+      const baseName = selectedFile.name.replace(/\.[^.]+$/, '');
       const a = document.createElement('a');
       a.href = outputUrl;
-      a.download = 'krvx_' + selectedFile.name.replace(/\.[^.]+$/, '') + '.mp4';
+      a.download = 'krvx_' + baseName + '.mp4';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -352,11 +391,13 @@ processBtn.addEventListener('click', async () => {
     progressWrap.classList.remove('show');
     resultWrap.classList.add('show');
 
-    await ffmpeg.deleteFile(inputName);
-    await ffmpeg.deleteFile(outputName);
+    // FIX: wrap cleanup in try/catch so a missing file doesn't crash the success state
+    try { await ffmpeg.deleteFile(inputName); } catch(e) {}
+    try { await ffmpeg.deleteFile(outputName); } catch(e) {}
+
   } catch (err) {
     progressWrap.classList.remove('show');
-    errorMsg.textContent = err.message || 'Something went wrong.';
+    errorMsg.textContent = '⚠ ' + (err.message || 'Something went wrong. Check console.');
     errorMsg.classList.add('show');
     console.error(err);
   }
