@@ -188,13 +188,12 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/umd/ffmpeg.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
-<script>
-const { FFmpeg } = FFmpegWASM;
-const { fetchFile, toBlobURL } = FFmpegUtil;
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
 
-// FIX: use -2 for width so aspect ratio is preserved, no distortion on non-16:9 videos
+<script>
+// 0.11.x API — no Worker, no SharedArrayBuffer, works on any static host
+const { createFFmpeg, fetchFile } = FFmpeg;
+
 const PRESETS = {
   tiktok:   { res: '-2:2160', crf: '15', bitrate: '50M', audio: '320k', label: '4K · 50Mbps' },
   balanced: { res: '-2:1440', crf: '18', bitrate: '25M', audio: '192k', label: '2K · 25Mbps' },
@@ -315,15 +314,14 @@ function setProgress(pct, status) {
 
 async function loadFFmpeg() {
   if (ffmpeg) return;
-  ffmpeg = new FFmpeg();
-  ffmpeg.on('log', ({ message }) => log(message));
-  ffmpeg.on('progress', ({ progress }) => setProgress(Math.min(10 + progress * 85, 95)));
-  log('Loading engine...');
-  const base = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core-st@0.12.6/dist/umd';
-  await ffmpeg.load({
-    coreURL: await toBlobURL(`${base}/ffmpeg-core.js`, 'text/javascript'),
-    wasmURL: await toBlobURL(`${base}/ffmpeg-core.wasm`, 'application/wasm'),
+  ffmpeg = createFFmpeg({
+    log: true,
+    logger: ({ message }) => log(message),
+    progress: ({ ratio }) => setProgress(Math.min(10 + ratio * 85, 95)),
+    corePath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
   });
+  log('Loading engine...');
+  await ffmpeg.load();
   log('Ready.');
 }
 
@@ -345,10 +343,10 @@ processBtn.addEventListener('click', async () => {
     const outputName = 'output.mp4';
 
     setProgress(8, 'Reading file...');
-    await ffmpeg.writeFile(inputName, await fetchFile(selectedFile));
+    ffmpeg.FS('writeFile', inputName, await fetchFile(selectedFile));
     setProgress(10, 'Processing...');
 
-    await ffmpeg.exec([
+    await ffmpeg.run(
       '-i', inputName,
       // FIX: scale preserves aspect ratio with -2:height, then sharpen
       '-vf', `scale=${p.res}:flags=lanczos,unsharp=5:5:1.0:3:3:0.5`,
@@ -363,10 +361,10 @@ processBtn.addEventListener('click', async () => {
       '-b:a', p.audio,
       '-movflags', '+faststart',
       outputName
-    ]);
+    );
 
     setProgress(96, 'Finalizing...');
-    const data = await ffmpeg.readFile(outputName);
+    const data = ffmpeg.FS('readFile', outputName);
     const blob = new Blob([data.buffer], { type: 'video/mp4' });
     if (outputUrl) URL.revokeObjectURL(outputUrl);
     outputUrl = URL.createObjectURL(blob);
@@ -392,8 +390,8 @@ processBtn.addEventListener('click', async () => {
     resultWrap.classList.add('show');
 
     // FIX: wrap cleanup in try/catch so a missing file doesn't crash the success state
-    try { await ffmpeg.deleteFile(inputName); } catch(e) {}
-    try { await ffmpeg.deleteFile(outputName); } catch(e) {}
+    try { ffmpeg.FS('unlink', inputName); } catch(e) {}
+    try { ffmpeg.FS('unlink', outputName); } catch(e) {}
 
   } catch (err) {
     progressWrap.classList.remove('show');
