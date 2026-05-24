@@ -139,6 +139,7 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
         <div class="preset-tags">
           <div class="preset-tag">1080p</div>
           <div class="preset-tag">12Mbps</div>
+          <div class="preset-tag">120fps</div>
           <div class="preset-tag">Ultrafast</div>
           <div class="preset-tag">192k audio</div>
         </div>
@@ -153,6 +154,7 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
         <div class="preset-tags">
           <div class="preset-tag">4K</div>
           <div class="preset-tag">50Mbps</div>
+          <div class="preset-tag">60fps</div>
           <div class="preset-tag">Lanczos</div>
           <div class="preset-tag">320k audio</div>
         </div>
@@ -167,6 +169,7 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
         <div class="preset-tags">
           <div class="preset-tag">2K</div>
           <div class="preset-tag">25Mbps</div>
+          <div class="preset-tag">60fps</div>
           <div class="preset-tag">Lanczos</div>
           <div class="preset-tag">192k audio</div>
         </div>
@@ -181,6 +184,7 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
         <div class="preset-tags">
           <div class="preset-tag">4K</div>
           <div class="preset-tag">80Mbps</div>
+          <div class="preset-tag">60fps</div>
           <div class="preset-tag">Lanczos</div>
           <div class="preset-tag">320k audio</div>
         </div>
@@ -256,10 +260,10 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
 const { createFFmpeg, fetchFile } = FFmpeg;
 
 const PRESETS = {
-  fast:     { res: '-2:1080', crf: '20', bitrate: '12M', audio: '192k', speed: 'ultrafast', label: 'Fast 1080p',  tag: '1080p H.264' },
-  tiktok:   { res: '-2:2160', crf: '15', bitrate: '50M', audio: '320k', speed: 'fast',      label: '4K 50Mbps',   tag: '4K H.264'   },
-  balanced: { res: '-2:1440', crf: '18', bitrate: '25M', audio: '192k', speed: 'fast',      label: '2K 25Mbps',   tag: '2K H.264'   },
-  ultra:    { res: '-2:2160', crf: '10', bitrate: '80M', audio: '320k', speed: 'fast',      label: '4K 80Mbps',   tag: '4K H.264'   }
+  fast:     { res: '-2:1080', crf: '20', bitrate: '12M', audio: '192k', speed: 'ultrafast', fps: '120', label: 'Fast 1080p',  tag: '1080p H.264' },
+  tiktok:   { res: '-2:2160', crf: '15', bitrate: '50M', audio: '320k', speed: 'fast',      fps: '60',  label: '4K 50Mbps',   tag: '4K H.264'   },
+  balanced: { res: '-2:1440', crf: '18', bitrate: '25M', audio: '192k', speed: 'fast',      fps: '60',  label: '2K 25Mbps',   tag: '2K H.264'   },
+  ultra:    { res: '-2:2160', crf: '10', bitrate: '80M', audio: '320k', speed: 'fast',      fps: '60',  label: '4K 80Mbps',   tag: '4K H.264'   }
 };
 
 let ffmpeg        = null;
@@ -439,6 +443,7 @@ processBtn.addEventListener('click', async () => {
     await ffmpeg.run(
       '-i', inputName,
       '-vf', 'scale=' + p.res + ':flags=lanczos,unsharp=5:5:1.5:3:3:0.8',
+      '-r', p.fps,
       '-c:v', 'libx264',
       '-crf', p.crf,
       '-preset', p.speed,
