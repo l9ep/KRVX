@@ -15,6 +15,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .logo{font-size:11px;letter-spacing:.3em;color:var(--p);font-family:'DM Mono',monospace;text-transform:uppercase;margin-bottom:20px}
 h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacing:-2px;background:linear-gradient(135deg,#fff 0%,var(--p2) 60%,var(--p) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .sub{margin-top:16px;font-size:14px;color:var(--muted);font-family:'DM Mono',monospace}
+
+/* PAGE 1 */
 .drop-zone{border:1px solid rgba(155,48,255,.3);border-radius:16px;padding:48px 24px;text-align:center;background:rgba(155,48,255,.04);transition:all .25s ease;position:relative;overflow:hidden;margin-top:40px;cursor:pointer}
 .drop-zone::before{content:'';position:absolute;inset:-1px;border-radius:16px;background:linear-gradient(135deg,rgba(155,48,255,.3),transparent,rgba(106,15,214,.2));opacity:0;transition:opacity .25s}
 .drop-zone:hover::before,.drop-zone.drag-over::before{opacity:1}
@@ -27,12 +29,13 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
 #fileInput{display:none}
 .mobile-tip{margin-top:16px;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace}
 
-/* Page 2 */
+/* PAGE 2 */
 .back-btn{background:none;border:none;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;margin-bottom:32px;transition:color .2s;padding:0}
 .back-btn:hover{color:var(--p2)}
-.video-preview-wrap{border-radius:12px;overflow:hidden;background:#000;margin-bottom:32px;position:relative}
-.video-preview-wrap video{width:100%;display:block;max-height:240px;object-fit:contain}
-.file-badge{position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,.7);padding:4px 10px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace;color:var(--p2)}
+.file-info{background:rgba(155,48,255,.06);border:1px solid rgba(155,48,255,.15);border-radius:10px;padding:14px 18px;margin-bottom:28px;display:flex;align-items:center;gap:12px}
+.file-info-icon{font-size:20px}
+.file-info-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-info-size{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px}
 .section-label{font-size:11px;letter-spacing:.2em;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;margin-bottom:16px}
 .presets{display:grid;gap:12px;margin-bottom:32px}
 .preset{border:1px solid rgba(155,48,255,.2);border-radius:12px;padding:20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
@@ -49,35 +52,43 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
 .preset-tag{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);padding:2px 8px;border:1px solid rgba(155,48,255,.15);border-radius:20px}
 .process-btn{display:block;width:100%;padding:18px;background:linear-gradient(135deg,var(--p3),var(--p));color:#fff;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;letter-spacing:.05em;cursor:pointer;transition:all .25s}
 .process-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(155,48,255,.4)}
-.process-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
 
-/* Progress */
-.progress-wrap{display:none;margin-top:28px}
-.progress-wrap.show{display:block}
-.progress-label{display:flex;justify-content:space-between;margin-bottom:10px}
-.progress-status{font-size:12px;font-family:'DM Mono',monospace;color:var(--p2)}
-.progress-pct{font-size:12px;font-family:'DM Mono',monospace;color:var(--muted)}
-.progress-bar{height:4px;background:rgba(155,48,255,.15);border-radius:4px;overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--p3),var(--p2));border-radius:4px;width:0%;transition:width .3s ease}
-.log-box{margin-top:12px;background:var(--bg);border:1px solid rgba(155,48,255,.1);border-radius:8px;padding:12px 14px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);height:72px;overflow-y:auto;line-height:1.6}
-.log-box::-webkit-scrollbar{width:3px}
-.log-box::-webkit-scrollbar-thumb{background:var(--p3);border-radius:4px}
+/* PAGE 3 — Processing */
+.page3-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center}
+.proc-icon{width:80px;height:80px;margin:0 auto 28px;position:relative}
+.proc-ring{width:80px;height:80px;border-radius:50%;border:3px solid rgba(155,48,255,.15);border-top-color:var(--p2);animation:spin 1s linear infinite;position:absolute;top:0;left:0}
+.proc-ring2{width:80px;height:80px;border-radius:50%;border:3px solid transparent;border-bottom-color:var(--p3);animation:spin 1.5s linear infinite reverse;position:absolute;top:0;left:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.proc-title{font-size:24px;font-weight:800;margin-bottom:8px}
+.proc-status{font-size:13px;color:var(--p2);font-family:'DM Mono',monospace;margin-bottom:32px;min-height:20px}
+.proc-bar-wrap{width:100%;max-width:320px;margin:0 auto 12px}
+.proc-bar-top{display:flex;justify-content:space-between;margin-bottom:8px}
+.proc-bar-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted)}
+.proc-bar-pct{font-size:11px;font-family:'DM Mono',monospace;color:var(--p2)}
+.proc-bar{height:6px;background:rgba(155,48,255,.15);border-radius:6px;overflow:hidden;width:100%}
+.proc-fill{height:100%;background:linear-gradient(90deg,var(--p3),var(--p2));border-radius:6px;width:0%;transition:width .4s ease}
+.proc-log{width:100%;max-width:320px;margin:16px auto 0;background:var(--bg);border:1px solid rgba(155,48,255,.1);border-radius:8px;padding:10px 14px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);height:64px;overflow-y:auto;line-height:1.6;text-align:left}
+.proc-log::-webkit-scrollbar{width:3px}
+.proc-log::-webkit-scrollbar-thumb{background:var(--p3);border-radius:4px}
 
-/* Result */
-.result-wrap{display:none;margin-top:28px}
-.result-wrap.show{display:block}
-.result-card{background:linear-gradient(135deg,rgba(155,48,255,.08),rgba(106,15,214,.05));border:1px solid rgba(155,48,255,.3);border-radius:16px;padding:28px;text-align:center}
-.result-icon{font-size:40px;margin-bottom:12px}
-.result-title{font-size:20px;font-weight:800;color:var(--p2);margin-bottom:6px}
-.result-sub{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:24px}
-.download-btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:var(--p);color:#fff;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;border:none;transition:all .2s}
+/* PAGE 4 — Result / Error */
+.result-card{background:linear-gradient(135deg,rgba(155,48,255,.08),rgba(106,15,214,.05));border:1px solid rgba(155,48,255,.3);border-radius:16px;padding:36px 28px;text-align:center}
+.result-icon{font-size:48px;margin-bottom:16px}
+.result-title{font-size:22px;font-weight:800;color:var(--p2);margin-bottom:6px}
+.result-sub{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:28px}
+.download-btn{display:inline-flex;align-items:center;gap:8px;padding:16px 36px;background:var(--p);color:#fff;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;border:none;transition:all .2s}
 .download-btn:hover{background:var(--p2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(155,48,255,.4)}
 .platform-tags{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
 .ptag{padding:4px 10px;border:1px solid rgba(155,48,255,.3);border-radius:20px;font-size:10px;font-family:'DM Mono',monospace;color:var(--muted)}
-.again-btn{display:block;margin:16px auto 0;background:none;border:none;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;cursor:pointer;transition:color .2s}
+.again-btn{display:block;margin:20px auto 0;background:none;border:none;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;cursor:pointer;transition:color .2s}
 .again-btn:hover{color:var(--p2)}
-.error-msg{display:none;margin-top:16px;padding:14px 18px;background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.25);border-radius:10px;font-size:12px;font-family:'DM Mono',monospace;color:#ff4d6d}
-.error-msg.show{display:block}
+.error-card{background:rgba(255,77,109,.06);border:1px solid rgba(255,77,109,.25);border-radius:16px;padding:36px 28px;text-align:center}
+.error-icon{font-size:40px;margin-bottom:16px}
+.error-title{font-size:18px;font-weight:800;color:#ff4d6d;margin-bottom:8px}
+.error-body{font-size:12px;font-family:'DM Mono',monospace;color:#ff4d6d;opacity:.8;margin-bottom:24px;line-height:1.6}
+.retry-btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:rgba(255,77,109,.15);color:#ff4d6d;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;border:1px solid rgba(255,77,109,.3);transition:all .2s}
+.retry-btn:hover{background:rgba(255,77,109,.25)}
+
 @media(max-width:480px){.wrap{padding:32px 16px 60px}}
 </style>
 </head>
@@ -89,30 +100,31 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
     <div class="logo">KRVX</div>
     <h1>MAKE IT<br>SHARP</h1>
     <p class="sub">TikTok & Instagram won't ruin it</p>
-
     <div class="drop-zone" id="dropZone">
       <div class="drop-icon">🎬</div>
       <div class="drop-title">Drop your video here</div>
       <div class="drop-sub">MP4, MOV, AVI, WEBM</div>
-      <!-- FIX: replaced <label for="fileInput"> with a real <button> that calls fileInput.click() -->
       <button class="browse-btn" id="browseBtn" type="button">Browse File</button>
       <input type="file" id="fileInput" accept="video/*">
       <div class="mobile-tip">📱 On mobile — tap Browse to pick from gallery or files</div>
     </div>
   </div>
 
-  <!-- PAGE 2: Settings + Process -->
+  <!-- PAGE 2: Settings -->
   <div class="page" id="page2">
     <button class="back-btn" id="backBtn">← back</button>
 
-    <div class="video-preview-wrap">
-      <video id="previewVideo" playsinline muted></video>
-      <div class="file-badge" id="fileBadge"></div>
+    <!-- File info row instead of video preview -->
+    <div class="file-info">
+      <div class="file-info-icon">🎬</div>
+      <div>
+        <div class="file-info-name" id="fileInfoName">video.mp4</div>
+        <div class="file-info-size" id="fileInfoSize">0 MB</div>
+      </div>
     </div>
 
     <div class="section-label">Pick a method</div>
-    <div class="presets" id="presets">
-
+    <div class="presets">
       <div class="preset selected" data-preset="tiktok">
         <div class="preset-top">
           <div class="preset-name">TikTok / Reels</div>
@@ -120,13 +132,9 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
         </div>
         <div class="preset-desc">Upscales to 4K with max sharpness and high bitrate. Best for short clips going on TikTok or Instagram Reels. Audio preserved at 320kbps.</div>
         <div class="preset-tags">
-          <div class="preset-tag">4K</div>
-          <div class="preset-tag">50Mbps</div>
-          <div class="preset-tag">Lanczos</div>
-          <div class="preset-tag">320k audio</div>
+          <div class="preset-tag">4K</div><div class="preset-tag">50Mbps</div><div class="preset-tag">Lanczos</div><div class="preset-tag">320k audio</div>
         </div>
       </div>
-
       <div class="preset" data-preset="balanced">
         <div class="preset-top">
           <div class="preset-name">Balanced</div>
@@ -134,13 +142,9 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
         </div>
         <div class="preset-desc">2K output with good quality and a smaller file size. Good when you want quality without the video being too large to send or upload.</div>
         <div class="preset-tags">
-          <div class="preset-tag">2K</div>
-          <div class="preset-tag">25Mbps</div>
-          <div class="preset-tag">Lanczos</div>
-          <div class="preset-tag">192k audio</div>
+          <div class="preset-tag">2K</div><div class="preset-tag">25Mbps</div><div class="preset-tag">Lanczos</div><div class="preset-tag">192k audio</div>
         </div>
       </div>
-
       <div class="preset" data-preset="ultra">
         <div class="preset-top">
           <div class="preset-name">Ultra</div>
@@ -148,50 +152,62 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
         </div>
         <div class="preset-desc">Near-lossless 4K with the highest bitrate. Use this when quality matters above everything else. File will be large but will survive any platform compression.</div>
         <div class="preset-tags">
-          <div class="preset-tag">4K</div>
-          <div class="preset-tag">80Mbps</div>
-          <div class="preset-tag">Lanczos</div>
-          <div class="preset-tag">320k audio</div>
+          <div class="preset-tag">4K</div><div class="preset-tag">80Mbps</div><div class="preset-tag">Lanczos</div><div class="preset-tag">320k audio</div>
         </div>
       </div>
-
     </div>
 
     <button class="process-btn" id="processBtn">UPSCALE VIDEO</button>
+  </div>
 
-    <div class="progress-wrap" id="progressWrap">
-      <div class="progress-label">
-        <span class="progress-status" id="progressStatus">Loading...</span>
-        <span class="progress-pct" id="progressPct">0%</span>
+  <!-- PAGE 3: Processing -->
+  <div class="page" id="page3">
+    <div class="page3-inner">
+      <div class="proc-icon">
+        <div class="proc-ring"></div>
+        <div class="proc-ring2"></div>
       </div>
-      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-      <div class="log-box" id="logBox"></div>
-    </div>
-
-    <div class="error-msg" id="errorMsg"></div>
-
-    <div class="result-wrap" id="resultWrap">
-      <div class="result-card">
-        <div class="result-icon">✦</div>
-        <div class="result-title">Done. Upload it.</div>
-        <div class="result-sub" id="resultSub"></div>
-        <button class="download-btn" id="downloadBtn">↓ Download Video</button>
-        <div class="platform-tags">
-          <div class="ptag">TikTok ready</div>
-          <div class="ptag">Instagram ready</div>
-          <div class="ptag" id="resTag">4K H.264</div>
+      <div class="proc-title">Processing...</div>
+      <div class="proc-status" id="procStatus">Loading engine...</div>
+      <div class="proc-bar-wrap">
+        <div class="proc-bar-top">
+          <span class="proc-bar-label">Progress</span>
+          <span class="proc-bar-pct" id="procPct">0%</span>
         </div>
-        <button class="again-btn" id="againBtn">process another</button>
+        <div class="proc-bar"><div class="proc-fill" id="procFill"></div></div>
       </div>
+      <div class="proc-log" id="procLog"></div>
+    </div>
+  </div>
+
+  <!-- PAGE 4: Result or Error -->
+  <div class="page" id="page4">
+    <!-- Result -->
+    <div class="result-card" id="resultCard">
+      <div class="result-icon">✦</div>
+      <div class="result-title">Done. Upload it.</div>
+      <div class="result-sub" id="resultSub"></div>
+      <button class="download-btn" id="downloadBtn">↓ Download Video</button>
+      <div class="platform-tags">
+        <div class="ptag">TikTok ready</div>
+        <div class="ptag">Instagram ready</div>
+        <div class="ptag" id="resTag">4K H.264</div>
+      </div>
+      <button class="again-btn" id="againBtn">process another →</button>
+    </div>
+    <!-- Error -->
+    <div class="error-card" id="errorCard" style="display:none">
+      <div class="error-icon">⚠</div>
+      <div class="error-title">Something went wrong</div>
+      <div class="error-body" id="errorBody"></div>
+      <button class="retry-btn" id="retryBtn">← try again</button>
     </div>
   </div>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
-
 <script>
-// 0.11.x API — no Worker, no SharedArrayBuffer, works on any static host
 const { createFFmpeg, fetchFile } = FFmpeg;
 
 const PRESETS = {
@@ -205,41 +221,41 @@ let selectedFile = null;
 let selectedPreset = 'tiktok';
 let outputUrl = null;
 
-const page1       = document.getElementById('page1');
-const page2       = document.getElementById('page2');
-const fileInput   = document.getElementById('fileInput');
-const browseBtn   = document.getElementById('browseBtn');
-const dropZone    = document.getElementById('dropZone');
-const backBtn     = document.getElementById('backBtn');
-const previewVideo = document.getElementById('previewVideo');
-const fileBadge   = document.getElementById('fileBadge');
-const processBtn  = document.getElementById('processBtn');
-const progressWrap = document.getElementById('progressWrap');
-const progressStatus = document.getElementById('progressStatus');
-const progressPct = document.getElementById('progressPct');
-const progressFill = document.getElementById('progressFill');
-const logBox      = document.getElementById('logBox');
-const errorMsg    = document.getElementById('errorMsg');
-const resultWrap  = document.getElementById('resultWrap');
-const resultSub   = document.getElementById('resultSub');
-const downloadBtn = document.getElementById('downloadBtn');
-const againBtn    = document.getElementById('againBtn');
-const resTag      = document.getElementById('resTag');
+const page1      = document.getElementById('page1');
+const page2      = document.getElementById('page2');
+const page3      = document.getElementById('page3');
+const page4      = document.getElementById('page4');
+const fileInput  = document.getElementById('fileInput');
+const browseBtn  = document.getElementById('browseBtn');
+const dropZone   = document.getElementById('dropZone');
+const backBtn    = document.getElementById('backBtn');
+const fileInfoName = document.getElementById('fileInfoName');
+const fileInfoSize = document.getElementById('fileInfoSize');
+const processBtn = document.getElementById('processBtn');
+const procStatus = document.getElementById('procStatus');
+const procPct    = document.getElementById('procPct');
+const procFill   = document.getElementById('procFill');
+const procLog    = document.getElementById('procLog');
+const resultCard = document.getElementById('resultCard');
+const resultSub  = document.getElementById('resultSub');
+const downloadBtn= document.getElementById('downloadBtn');
+const resTag     = document.getElementById('resTag');
+const againBtn   = document.getElementById('againBtn');
+const errorCard  = document.getElementById('errorCard');
+const errorBody  = document.getElementById('errorBody');
+const retryBtn   = document.getElementById('retryBtn');
 
 function formatBytes(b) {
   return b < 1048576 ? (b/1024).toFixed(1)+' KB' : (b/1048576).toFixed(1)+' MB';
 }
 
 function goPage(n) {
-  page1.classList.toggle('active', n === 1);
-  page2.classList.toggle('active', n === 2);
-  window.scrollTo(0, 0);
+  [page1,page2,page3,page4].forEach((p,i) => p.classList.toggle('active', i+1===n));
+  window.scrollTo(0,0);
 }
 
 function setFile(file) {
   if (!file) return;
-  // FIX: also accept video/quicktime and be more permissive — check by extension if MIME missing
-  const validTypes = ['video/mp4','video/quicktime','video/x-msvideo','video/webm','video/avi','video/mov'];
   const ext = file.name.split('.').pop().toLowerCase();
   const validExts = ['mp4','mov','avi','webm','mkv'];
   if (!file.type.startsWith('video/') && !validExts.includes(ext)) {
@@ -247,34 +263,22 @@ function setFile(file) {
     return;
   }
   selectedFile = file;
-  const url = URL.createObjectURL(file);
-  previewVideo.src = url;
-  fileBadge.textContent = file.name + ' · ' + formatBytes(file.size);
-  progressWrap.classList.remove('show');
-  resultWrap.classList.remove('show');
-  errorMsg.classList.remove('show');
-  logBox.innerHTML = '';
+  fileInfoName.textContent = file.name;
+  fileInfoSize.textContent = formatBytes(file.size);
   goPage(2);
 }
 
-// FIX: Browse button directly triggers fileInput.click() — no <label> needed
-browseBtn.addEventListener('click', (e) => {
-  e.stopPropagation(); // prevent drop zone click from also firing
-  fileInput.value = ''; // reset so same file can be re-selected
+browseBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  fileInput.value = '';
   fileInput.click();
 });
-
-fileInput.addEventListener('change', e => {
-  if (e.target.files[0]) setFile(e.target.files[0]);
-});
-
-// FIX: drop zone click should only fire if user didn't click the button
-dropZone.addEventListener('click', (e) => {
+fileInput.addEventListener('change', e => { if (e.target.files[0]) setFile(e.target.files[0]); });
+dropZone.addEventListener('click', e => {
   if (e.target === browseBtn) return;
   fileInput.value = '';
   fileInput.click();
 });
-
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
 dropZone.addEventListener('drop', e => {
@@ -282,20 +286,6 @@ dropZone.addEventListener('drop', e => {
   dropZone.classList.remove('drag-over');
   if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
 });
-
-function resetToPage1() {
-  fileInput.value = '';
-  if (previewVideo.src) {
-    URL.revokeObjectURL(previewVideo.src);
-    previewVideo.src = '';
-  }
-  if (outputUrl) { URL.revokeObjectURL(outputUrl); outputUrl = null; }
-  selectedFile = null;
-  goPage(1);
-}
-
-backBtn.addEventListener('click', resetToPage1);
-againBtn.addEventListener('click', resetToPage1);
 
 document.querySelectorAll('.preset').forEach(el => {
   el.addEventListener('click', () => {
@@ -305,50 +295,82 @@ document.querySelectorAll('.preset').forEach(el => {
   });
 });
 
-function log(msg) { logBox.innerHTML += msg + '\n'; logBox.scrollTop = logBox.scrollHeight; }
+backBtn.addEventListener('click', () => {
+  fileInput.value = '';
+  if (outputUrl) { URL.revokeObjectURL(outputUrl); outputUrl = null; }
+  selectedFile = null;
+  goPage(1);
+});
+
+function resetToPage1() {
+  fileInput.value = '';
+  if (outputUrl) { URL.revokeObjectURL(outputUrl); outputUrl = null; }
+  selectedFile = null;
+  goPage(1);
+}
+
+againBtn.addEventListener('click', resetToPage1);
+retryBtn.addEventListener('click', () => goPage(2));
+
+function log(msg) {
+  procLog.innerHTML += msg + '\n';
+  procLog.scrollTop = procLog.scrollHeight;
+}
+
 function setProgress(pct, status) {
-  progressFill.style.width = pct + '%';
-  progressPct.textContent = Math.round(pct) + '%';
-  if (status) progressStatus.textContent = status;
+  const clamped = Math.min(Math.max(pct, 0), 100);
+  procFill.style.width = clamped + '%';
+  procPct.textContent = Math.round(clamped) + '%';
+  if (status) procStatus.textContent = status;
 }
 
 async function loadFFmpeg() {
   if (ffmpeg) return;
+  // Fake progress ticker while engine loads (can take 5–15s)
+  let fakePct = 0;
+  const ticker = setInterval(() => {
+    fakePct = Math.min(fakePct + 1, 18);
+    setProgress(fakePct, 'Loading engine...');
+  }, 300);
+
   ffmpeg = createFFmpeg({
     log: true,
     logger: ({ message }) => log(message),
-    progress: ({ ratio }) => setProgress(Math.min(10 + ratio * 85, 95)),
+    progress: ({ ratio }) => {
+      if (ratio > 0) setProgress(20 + ratio * 75, 'Encoding...');
+    },
     corePath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
   });
-  log('Loading engine...');
+
   await ffmpeg.load();
-  log('Ready.');
+  clearInterval(ticker);
+  log('Engine ready.');
 }
 
 processBtn.addEventListener('click', async () => {
   if (!selectedFile) return;
-  processBtn.disabled = true;
-  progressWrap.classList.add('show');
-  resultWrap.classList.remove('show');
-  errorMsg.classList.remove('show');
-  logBox.innerHTML = '';
-  setProgress(0, 'Loading engine...');
+  procLog.innerHTML = '';
+  setProgress(0, 'Starting...');
+  resultCard.style.display = 'block';
+  errorCard.style.display = 'none';
+  goPage(3);
 
   try {
     await loadFFmpeg();
     const p = PRESETS[selectedPreset];
     const ext = selectedFile.name.split('.').pop().toLowerCase() || 'mp4';
     const inputName = 'input.' + ext;
-    // FIX: output is always .mp4
     const outputName = 'output.mp4';
 
-    setProgress(8, 'Reading file...');
+    setProgress(19, 'Reading file...');
+    log('Reading file...');
     ffmpeg.FS('writeFile', inputName, await fetchFile(selectedFile));
-    setProgress(10, 'Processing...');
+
+    setProgress(20, 'Encoding...');
+    log('Running FFmpeg...');
 
     await ffmpeg.run(
       '-i', inputName,
-      // FIX: scale preserves aspect ratio with -2:height, then sharpen
       '-vf', `scale=${p.res}:flags=lanczos,unsharp=5:5:1.0:3:3:0.5`,
       '-c:v', 'libx264',
       '-crf', p.crf,
@@ -363,7 +385,8 @@ processBtn.addEventListener('click', async () => {
       outputName
     );
 
-    setProgress(96, 'Finalizing...');
+    setProgress(97, 'Finalizing...');
+    log('Finalizing...');
     const data = ffmpeg.FS('readFile', outputName);
     const blob = new Blob([data.buffer], { type: 'video/mp4' });
     if (outputUrl) URL.revokeObjectURL(outputUrl);
@@ -371,36 +394,32 @@ processBtn.addEventListener('click', async () => {
 
     const outMB = (blob.size / 1048576).toFixed(1);
     resultSub.textContent = p.label + ' · ' + outMB + ' MB — ready to upload';
-    // FIX: check res label correctly for -2:2160 vs -2:1440
     resTag.textContent = p.res.includes('2160') ? '4K H.264' : '2K H.264';
 
-    // FIX: download filename always ends in .mp4
     downloadBtn.onclick = () => {
-      const baseName = selectedFile.name.replace(/\.[^.]+$/, '');
       const a = document.createElement('a');
       a.href = outputUrl;
-      a.download = 'krvx_' + baseName + '.mp4';
+      a.download = 'krvx_' + selectedFile.name.replace(/\.[^.]+$/, '') + '.mp4';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
     };
 
     setProgress(100, 'Done');
-    progressWrap.classList.remove('show');
-    resultWrap.classList.add('show');
+    resultCard.style.display = 'block';
+    errorCard.style.display = 'none';
+    goPage(4);
 
-    // FIX: wrap cleanup in try/catch so a missing file doesn't crash the success state
     try { ffmpeg.FS('unlink', inputName); } catch(e) {}
     try { ffmpeg.FS('unlink', outputName); } catch(e) {}
 
   } catch (err) {
-    progressWrap.classList.remove('show');
-    errorMsg.textContent = '⚠ ' + (err.message || 'Something went wrong. Check console.');
-    errorMsg.classList.add('show');
+    errorBody.textContent = err.message || 'Unknown error. Check your browser console.';
+    resultCard.style.display = 'none';
+    errorCard.style.display = 'block';
+    goPage(4);
     console.error(err);
   }
-
-  processBtn.disabled = false;
 });
 </script>
 </body>
