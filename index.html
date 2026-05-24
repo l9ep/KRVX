@@ -137,9 +137,9 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
         </div>
         <div class="preset-desc">1080p sharp output using ultrafast encoding. Processes in a fraction of the time. Great when you need it done quick and still want it to look good.</div>
         <div class="preset-tags">
-          <div class="preset-tag">1080p</div>
-          <div class="preset-tag">25Mbps</div>
-          <div class="preset-tag">60fps</div>
+          <div class="preset-tag">1440p</div>
+          <div class="preset-tag">40Mbps</div>
+          <div class="preset-tag">120fps</div>
           <div class="preset-tag">Fast</div>
           <div class="preset-tag">320k audio</div>
         </div>
@@ -260,10 +260,10 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
 const { createFFmpeg, fetchFile } = FFmpeg;
 
 const PRESETS = {
-  fast:     { res: '-2:1080', crf: '16', bitrate: '25M', audio: '320k', speed: 'fast',      fps: '60',  label: 'Fast 1080p',  tag: '1080p H.264' },
-  tiktok:   { res: '-2:2160', crf: '15', bitrate: '50M', audio: '320k', speed: 'fast',      fps: '60',  label: '4K 50Mbps',   tag: '4K H.264'   },
-  balanced: { res: '-2:1440', crf: '18', bitrate: '25M', audio: '192k', speed: 'fast',      fps: '60',  label: '2K 25Mbps',   tag: '2K H.264'   },
-  ultra:    { res: '-2:2160', crf: '10', bitrate: '80M', audio: '320k', speed: 'fast',      fps: '60',  label: '4K 80Mbps',   tag: '4K H.264'   }
+  fast:     { res: '-2:1440', crf: '14', bitrate: '40M', audio: '320k', speed: 'fast',      fps: '120', label: 'Fast 1440p',  tag: '1440p H.264', estMult: 1.2 },
+  tiktok:   { res: '-2:2160', crf: '15', bitrate: '50M', audio: '320k', speed: 'fast',      fps: '60',  label: '4K 50Mbps',   tag: '4K H.264',   estMult: 2.5 },
+  balanced: { res: '-2:1440', crf: '18', bitrate: '25M', audio: '192k', speed: 'fast',      fps: '60',  label: '2K 25Mbps',   tag: '2K H.264',   estMult: 1.8 },
+  ultra:    { res: '-2:2160', crf: '10', bitrate: '80M', audio: '320k', speed: 'fast',      fps: '60',  label: '4K 80Mbps',   tag: '4K H.264',   estMult: 4.0 }
 };
 
 let ffmpeg        = null;
@@ -405,6 +405,11 @@ async function loadFFmpeg() {
   await ffmpeg.load();
 }
 
+function fmtSecs(s) {
+  if (s < 60) return Math.round(s) + 's';
+  return Math.floor(s / 60) + 'm ' + Math.round(s % 60) + 's';
+}
+
 processBtn.addEventListener('click', async () => {
   if (!selectedFile) return;
 
@@ -414,7 +419,7 @@ processBtn.addEventListener('click', async () => {
   goPage(3);
 
   try {
-    // 0 -> 15%: load engine (~8s)
+    // 0 -> 15%: load engine
     ticker(15, 8000, 'Loading engine...');
     log('Loading engine...');
     await loadFFmpeg();
@@ -426,19 +431,28 @@ processBtn.addEventListener('click', async () => {
     const inputName = 'input.' + ext;
     const outputName = 'output.mp4';
 
-    // 15 -> 20%: read file (~2s)
+    // Estimate encode time from file size + preset weight
+    const fileMB = selectedFile.size / 1048576;
+    const encSecs = Math.max(fileMB * 1.8 * p.estMult, 4);
+    const encMs = encSecs * 1000;
+    log('Preset: ' + p.label + ' · ' + p.fps + 'fps · ' + p.bitrate);
+    log('Est. time: ~' + fmtSecs(encSecs));
+
+    // 15 -> 20%: read file
     ticker(20, 2000, 'Reading file...');
     log('Reading file...');
     ffmpeg.FS('writeFile', inputName, await fetchFile(selectedFile));
-    snapTo(20, 'Encoding...');
 
-    // 20 -> 98%: encode
-    // Fast preset is ~5x quicker than others due to ultrafast
-    const fileMB = selectedFile.size / 1048576;
-    const speedMult = selectedPreset === 'fast' ? 0.25 : 1;
-    const encMs = Math.max(fileMB * 1200 * speedMult, 3000);
-    ticker(98, encMs, 'Encoding...');
-    log('Encoding with preset: ' + p.label);
+    // 20 -> 95%: encode with live countdown
+    const encStart = Date.now();
+    let countdownTimer = setInterval(() => {
+      const elapsed = (Date.now() - encStart) / 1000;
+      const remaining = Math.max(encSecs - elapsed, 0);
+      procStatus.textContent = 'Encoding... ~' + fmtSecs(remaining) + ' left';
+    }, 500);
+
+    ticker(95, encMs, 'Encoding...');
+    log('Encoding...');
 
     await ffmpeg.run(
       '-i', inputName,
@@ -457,16 +471,17 @@ processBtn.addEventListener('click', async () => {
       outputName
     );
 
-    // 98 -> 100%: finalize
-    snapTo(98, 'Finalizing...');
+    clearInterval(countdownTimer);
+
+    // 95 -> 100%: finalize
+    ticker(100, 900, 'Finalizing...');
     log('Finalizing...');
     const data = ffmpeg.FS('readFile', outputName);
     const blob = new Blob([data.buffer], { type: 'video/mp4' });
     if (outputUrl) URL.revokeObjectURL(outputUrl);
     outputUrl = URL.createObjectURL(blob);
 
-    ticker(100, 600, 'Done!');
-    await new Promise(r => setTimeout(r, 700));
+    await new Promise(r => setTimeout(r, 1000));
     snapTo(100, 'Done!');
     log('Complete.');
 
