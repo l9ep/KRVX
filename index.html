@@ -74,7 +74,6 @@
     font-size: 14px;
     color: var(--muted);
     font-family: 'DM Mono', monospace;
-    font-weight: 300;
   }
 
   .drop-zone {
@@ -82,7 +81,6 @@
     border-radius: 16px;
     padding: 48px 24px;
     text-align: center;
-    cursor: pointer;
     background: rgba(155,48,255,0.04);
     transition: all 0.25s ease;
     position: relative;
@@ -99,11 +97,10 @@
     transition: opacity 0.25s;
   }
 
-  .drop-zone:hover::before, .drop-zone.drag-over::before { opacity: 1; }
-  .drop-zone:hover, .drop-zone.drag-over {
+  .drop-zone:hover::before { opacity: 1; }
+  .drop-zone:hover {
     border-color: var(--p);
     background: rgba(155,48,255,0.08);
-    transform: translateY(-2px);
   }
 
   .drop-icon {
@@ -122,19 +119,24 @@
     font-family: 'DM Mono', monospace; margin-bottom: 24px;
   }
 
-  .browse-btn {
+  .browse-label {
     display: inline-block; padding: 12px 28px;
     background: var(--p); color: #fff; border-radius: 8px;
     font-family: 'Syne', sans-serif; font-weight: 700;
-    font-size: 13px; cursor: pointer; transition: all 0.2s; border: none;
+    font-size: 13px; cursor: pointer; transition: all 0.2s;
+    position: relative; z-index: 2;
   }
 
-  .browse-btn:hover {
+  .browse-label:hover {
     background: var(--p2); transform: translateY(-1px);
     box-shadow: 0 8px 24px rgba(155,48,255,0.35);
   }
 
-  #fileInput { display: none; }
+  #fileInput {
+    position: absolute;
+    width: 1px; height: 1px;
+    opacity: 0; overflow: hidden;
+  }
 
   .mobile-tip {
     margin-top: 16px; font-size: 11px; color: var(--muted);
@@ -162,11 +164,8 @@
     padding: 6px 10px; outline: none; cursor: pointer;
   }
 
-  .setting-control select:focus { border-color: var(--p); }
-
   input[type="range"] {
-    width: 100px; accent-color: var(--p);
-    height: 4px; cursor: pointer;
+    width: 100px; accent-color: var(--p); cursor: pointer;
   }
 
   .range-val { font-size: 11px; color: var(--p2); font-family: 'DM Mono', monospace; min-width: 28px; text-align: right; }
@@ -206,21 +205,13 @@
     position: relative; overflow: hidden;
   }
 
-  .process-btn::before {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(135deg, var(--p), var(--p2));
-    opacity: 0; transition: opacity 0.25s;
-  }
-
-  .process-btn:hover::before { opacity: 1; }
   .process-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(155,48,255,0.4); }
   .process-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
-  .process-btn span { position: relative; z-index: 1; }
 
   .progress-wrap { display: none; margin-top: 28px; }
   .progress-wrap.show { display: block; }
 
-  .progress-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .progress-label { display: flex; justify-content: space-between; margin-bottom: 10px; }
   .progress-status { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--p2); }
   .progress-pct { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--muted); }
 
@@ -229,26 +220,13 @@
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--p3), var(--p2));
-    border-radius: 4px; width: 0%; transition: width 0.3s ease;
-    position: relative;
+    border-radius: 4px; width: 0%; transition: width 0.4s ease;
   }
 
-  .progress-fill::after {
-    content: ''; position: absolute; right: 0; top: -2px;
-    width: 8px; height: 8px; background: var(--p2);
-    border-radius: 50%; box-shadow: 0 0 8px var(--p2);
+  .status-note {
+    margin-top: 10px; font-size: 11px; color: var(--muted);
+    font-family: 'DM Mono', monospace; text-align: center;
   }
-
-  .log-box {
-    margin-top: 12px; background: var(--bg);
-    border: 1px solid rgba(155,48,255,0.1);
-    border-radius: 8px; padding: 12px 14px;
-    font-family: 'DM Mono', monospace; font-size: 10px;
-    color: var(--muted); height: 80px; overflow-y: auto; line-height: 1.6;
-  }
-
-  .log-box::-webkit-scrollbar { width: 4px; }
-  .log-box::-webkit-scrollbar-thumb { background: var(--p3); border-radius: 4px; }
 
   .result-wrap { display: none; margin-top: 28px; }
   .result-wrap.show { display: block; }
@@ -297,8 +275,7 @@
 
   .error-msg.show { display: block; }
 
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-  .blink { animation: blink 1s step-end infinite; }
+  canvas { display: none; }
 
   @media (max-width: 480px) {
     .wrap { padding: 32px 16px 60px; }
@@ -319,10 +296,10 @@
   <div class="drop-zone" id="dropZone">
     <div class="drop-icon">🎬</div>
     <div class="drop-title">Drop your video here</div>
-    <div class="drop-sub">MP4, MOV, AVI, MKV, WEBM</div>
-    <label for="fileInput" class="browse-btn">Browse File</label>
-    <div class="mobile-tip">📱 On mobile — tap Browse, then pick from your gallery or files app</div>
-    <input type="file" id="fileInput" accept="video/mp4,video/quicktime,video/x-msvideo,video/webm,video/x-matroska,video/*">
+    <div class="drop-sub">MP4, MOV, AVI, WEBM</div>
+    <label class="browse-label" for="fileInput">Browse File</label>
+    <input type="file" id="fileInput" accept="video/*">
+    <div class="mobile-tip">📱 On mobile — tap Browse to pick from gallery or files</div>
   </div>
 
   <div class="file-preview" id="filePreview">
@@ -342,55 +319,41 @@
       </div>
       <div class="setting-control">
         <select id="resolution">
-          <option value="3840:2160">4K — Best</option>
-          <option value="2560:1440">2K</option>
-          <option value="1920:1080">1080p</option>
+          <option value="3840">4K — Best</option>
+          <option value="2560">2K</option>
+          <option value="1920">1080p</option>
         </select>
       </div>
     </div>
 
     <div class="setting-row">
       <div>
-        <div class="setting-label">Quality</div>
-        <div class="setting-desc">Lower = sharper (15 is near-lossless)</div>
+        <div class="setting-label">Bitrate</div>
+        <div class="setting-desc">Higher = more detail kept</div>
       </div>
       <div class="setting-control">
         <div class="range-wrap">
-          <input type="range" id="crf" min="12" max="28" value="15"
-            oninput="document.getElementById('crfVal').textContent=this.value">
-          <span class="range-val" id="crfVal">15</span>
+          <input type="range" id="bitrate" min="8" max="40" value="20"
+            oninput="document.getElementById('bitrateVal').textContent=this.value+'M'">
+          <span class="range-val" id="bitrateVal">20M</span>
         </div>
-      </div>
-    </div>
-
-    <div class="setting-row">
-      <div>
-        <div class="setting-label">Sharpening</div>
-        <div class="setting-desc">Lanczos = crispest edges</div>
-      </div>
-      <div class="setting-control">
-        <select id="sharpen">
-          <option value="lanczos">Max Sharp</option>
-          <option value="bicubic">Smooth</option>
-          <option value="bilinear">Fast</option>
-        </select>
       </div>
     </div>
   </div>
 
   <button class="process-btn" id="processBtn" style="display:none" disabled>
-    <span>UPSCALE VIDEO</span>
+    UPSCALE VIDEO
   </button>
 
   <div class="progress-wrap" id="progressWrap">
     <div class="progress-label">
-      <span class="progress-status" id="progressStatus">Processing<span class="blink">_</span></span>
+      <span class="progress-status" id="progressStatus">Processing...</span>
       <span class="progress-pct" id="progressPct">0%</span>
     </div>
     <div class="progress-bar">
       <div class="progress-fill" id="progressFill"></div>
     </div>
-    <div class="log-box" id="logBox"></div>
+    <div class="status-note" id="statusNote">This may take a few minutes on mobile</div>
   </div>
 
   <div class="error-msg" id="errorMsg"></div>
@@ -404,25 +367,21 @@
       <div class="platform-tags">
         <div class="tag">TikTok ready</div>
         <div class="tag">Instagram ready</div>
-        <div class="tag">4K H.264</div>
+        <div class="tag">High bitrate</div>
       </div>
       <button class="again-btn" id="againBtn">process another</button>
     </div>
   </div>
 
+  <canvas id="canvas"></canvas>
+  <video id="hiddenVideo" style="display:none" playsinline muted></video>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/umd/ffmpeg.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
 <script>
-const { FFmpeg } = FFmpegWASM;
-const { fetchFile, toBlobURL } = FFmpegUtil;
-
-let ffmpeg = null;
 let selectedFile = null;
 let outputUrl = null;
 
-const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
 const filePreview = document.getElementById('filePreview');
 const fileName = document.getElementById('fileName');
@@ -434,12 +393,14 @@ const progressWrap = document.getElementById('progressWrap');
 const progressStatus = document.getElementById('progressStatus');
 const progressPct = document.getElementById('progressPct');
 const progressFill = document.getElementById('progressFill');
-const logBox = document.getElementById('logBox');
+const statusNote = document.getElementById('statusNote');
 const errorMsg = document.getElementById('errorMsg');
 const resultWrap = document.getElementById('resultWrap');
 const resultSub = document.getElementById('resultSub');
 const downloadBtn = document.getElementById('downloadBtn');
 const againBtn = document.getElementById('againBtn');
+const canvas = document.getElementById('canvas');
+const hiddenVideo = document.getElementById('hiddenVideo');
 
 function formatBytes(b) {
   if (b < 1024 * 1024) return (b / 1024).toFixed(1) + ' KB';
@@ -447,10 +408,11 @@ function formatBytes(b) {
 }
 
 function setFile(file) {
-  if (!file || !file.type.startsWith('video/')) { showError('Pick a valid video file.'); return; }
+  if (!file) return;
+  if (!file.type.startsWith('video/')) { showError('Pick a valid video file.'); return; }
   selectedFile = file;
   fileName.textContent = file.name;
-  fileMeta.textContent = formatBytes(file.size) + ' — ' + file.type.split('/')[1].toUpperCase();
+  fileMeta.textContent = formatBytes(file.size) + ' — ' + (file.type.split('/')[1] || 'video').toUpperCase();
   filePreview.classList.add('show');
   settingsPanel.style.display = 'grid';
   processBtn.style.display = 'block';
@@ -460,51 +422,41 @@ function setFile(file) {
   progressWrap.classList.remove('show');
 }
 
-fileInput.addEventListener('change', e => { if (e.target.files[0]) setFile(e.target.files[0]); });
+fileInput.addEventListener('change', e => {
+  if (e.target.files && e.target.files[0]) setFile(e.target.files[0]);
+});
 
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+const dropZone = document.getElementById('dropZone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor = 'var(--p)'; });
+dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = ''; });
 dropZone.addEventListener('drop', e => {
-  e.preventDefault(); dropZone.classList.remove('drag-over');
+  e.preventDefault(); dropZone.style.borderColor = '';
   if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
 });
 
-removeBtn.addEventListener('click', () => {
-  selectedFile = null; fileInput.value = '';
+removeBtn.addEventListener('click', reset);
+
+function reset() {
+  selectedFile = null;
+  fileInput.value = '';
   filePreview.classList.remove('show');
   settingsPanel.style.display = 'none';
   processBtn.style.display = 'none';
   resultWrap.classList.remove('show');
   progressWrap.classList.remove('show');
   hideError();
-});
-
-againBtn.addEventListener('click', () => {
-  removeBtn.click();
   if (outputUrl) { URL.revokeObjectURL(outputUrl); outputUrl = null; }
-});
+}
 
-function log(msg) { logBox.innerHTML += msg + '\n'; logBox.scrollTop = logBox.scrollHeight; }
+againBtn.addEventListener('click', reset);
+
 function showError(msg) { errorMsg.textContent = msg; errorMsg.classList.add('show'); }
 function hideError() { errorMsg.classList.remove('show'); }
+
 function setProgress(pct, status) {
   progressFill.style.width = pct + '%';
   progressPct.textContent = Math.round(pct) + '%';
-  if (status) progressStatus.innerHTML = status + '<span class="blink">_</span>';
-}
-
-async function loadFFmpeg() {
-  if (ffmpeg) return;
-  ffmpeg = new FFmpeg();
-  ffmpeg.on('log', ({ message }) => log(message));
-  ffmpeg.on('progress', ({ progress }) => setProgress(Math.min(progress * 100, 99)));
-  log('Loading engine...');
-  const base = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd';
-  await ffmpeg.load({
-    coreURL: await toBlobURL(`${base}/ffmpeg-core.js`, 'text/javascript'),
-    wasmURL: await toBlobURL(`${base}/ffmpeg-core.wasm`, 'application/wasm'),
-  });
-  log('Engine ready.');
+  if (status) progressStatus.textContent = status;
 }
 
 processBtn.addEventListener('click', async () => {
@@ -513,62 +465,108 @@ processBtn.addEventListener('click', async () => {
   progressWrap.classList.add('show');
   resultWrap.classList.remove('show');
   hideError();
-  logBox.innerHTML = '';
-  setProgress(0, 'Loading engine');
+  setProgress(0, 'Loading video...');
+  statusNote.textContent = 'This may take a few minutes on mobile';
 
   try {
-    await loadFFmpeg();
-    const resolution = document.getElementById('resolution').value;
-    const crf = document.getElementById('crf').value;
-    const sharpen = document.getElementById('sharpen').value;
-    const ext = selectedFile.name.split('.').pop().toLowerCase();
-    const inputName = 'input.' + ext;
-    const outputName = 'output.mp4';
+    const targetWidth = parseInt(document.getElementById('resolution').value);
+    const bitrateVal = parseInt(document.getElementById('bitrate').value) * 1000000;
 
-    setProgress(5, 'Reading file');
-    await ffmpeg.writeFile(inputName, await fetchFile(selectedFile));
-    setProgress(10, 'Processing');
+    // Load video into element
+    const videoUrl = URL.createObjectURL(selectedFile);
+    hiddenVideo.src = videoUrl;
 
-    await ffmpeg.exec([
-      '-i', inputName,
-      '-vf', `scale=${resolution}:flags=${sharpen},unsharp=5:5:0.8:3:3:0.4`,
-      '-c:v', 'libx264',
-      '-crf', crf,
-      '-preset', 'fast',
-      '-profile:v', 'high',
-      '-level', '5.1',
-      '-pix_fmt', 'yuv420p',
-      '-c:a', 'aac',
-      '-b:a', '320k',
-      '-movflags', '+faststart',
-      outputName
-    ]);
+    await new Promise((res, rej) => {
+      hiddenVideo.onloadedmetadata = res;
+      hiddenVideo.onerror = rej;
+    });
 
-    setProgress(98, 'Finalizing');
-    const data = await ffmpeg.readFile(outputName);
-    const blob = new Blob([data.buffer], { type: 'video/mp4' });
+    const origW = hiddenVideo.videoWidth;
+    const origH = hiddenVideo.videoHeight;
+    const duration = hiddenVideo.duration;
+    const fps = 30;
+
+    // Calculate upscaled dimensions maintaining aspect ratio
+    const scale = targetWidth / origW;
+    const newW = targetWidth;
+    const newH = Math.round(origH * scale / 2) * 2; // keep even
+
+    canvas.width = newW;
+    canvas.height = newH;
+    const ctx = canvas.getContext('2d');
+
+    // Check MediaRecorder support
+    const mimeTypes = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm', 'video/mp4'];
+    let mimeType = '';
+    for (const m of mimeTypes) {
+      if (MediaRecorder.isTypeSupported(m)) { mimeType = m; break; }
+    }
+
+    if (!mimeType) throw new Error('Your browser does not support video recording. Try Chrome or Firefox.');
+
+    const stream = canvas.captureStream(fps);
+    const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: bitrateVal });
+    const chunks = [];
+
+    recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+
+    setProgress(5, 'Processing frames...');
+
+    await new Promise((resolve, reject) => {
+      recorder.onstop = resolve;
+      recorder.onerror = reject;
+      recorder.start(100);
+
+      hiddenVideo.currentTime = 0;
+      hiddenVideo.play();
+
+      const drawFrame = () => {
+        if (hiddenVideo.ended || hiddenVideo.currentTime >= duration) {
+          recorder.stop();
+          hiddenVideo.pause();
+          return;
+        }
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(hiddenVideo, 0, 0, newW, newH);
+        const pct = 5 + (hiddenVideo.currentTime / duration) * 90;
+        setProgress(pct, 'Processing frames...');
+        requestAnimationFrame(drawFrame);
+      };
+
+      hiddenVideo.onplay = () => requestAnimationFrame(drawFrame);
+    });
+
+    setProgress(97, 'Finalizing...');
+
+    const blob = new Blob(chunks, { type: mimeType });
     if (outputUrl) URL.revokeObjectURL(outputUrl);
     outputUrl = URL.createObjectURL(blob);
+    URL.revokeObjectURL(videoUrl);
 
+    const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
     const outMB = (blob.size / (1024 * 1024)).toFixed(1);
-    const resLabel = resolution === '3840:2160' ? '4K' : resolution === '2560:1440' ? '2K' : '1080p';
-    resultSub.textContent = resLabel + ' · H.264 · ' + outMB + ' MB — ready to upload';
+    const resLabel = targetWidth >= 3840 ? '4K' : targetWidth >= 2560 ? '2K' : '1080p';
+
+    resultSub.textContent = resLabel + ' · ' + outMB + ' MB — ready to upload';
 
     downloadBtn.onclick = () => {
       const a = document.createElement('a');
       a.href = outputUrl;
-      a.download = 'upscaled_' + selectedFile.name.replace(/\.[^.]+$/, '') + '.mp4';
+      a.download = 'krvx_' + selectedFile.name.replace(/\.[^.]+$/, '') + '.' + ext;
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
     };
 
     setProgress(100, 'Done');
     progressWrap.classList.remove('show');
     resultWrap.classList.add('show');
-    await ffmpeg.deleteFile(inputName);
-    await ffmpeg.deleteFile(outputName);
+
   } catch (err) {
     progressWrap.classList.remove('show');
-    showError('Something went wrong: ' + err.message);
+    showError(err.message || 'Something went wrong.');
+    console.error(err);
   }
 
   processBtn.disabled = false;
