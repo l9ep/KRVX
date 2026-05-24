@@ -443,15 +443,23 @@ processBtn.addEventListener('click', async () => {
     log('Reading file...');
     ffmpeg.FS('writeFile', inputName, await fetchFile(selectedFile));
 
-    // 20 -> 95%: encode with live countdown
+    // 20 -> 95%: encode with live countdown, then creep to 99 if still going
     const encStart = Date.now();
     let countdownTimer = setInterval(() => {
       const elapsed = (Date.now() - encStart) / 1000;
       const remaining = Math.max(encSecs - elapsed, 0);
-      procStatus.textContent = 'Encoding... ~' + fmtSecs(remaining) + ' left';
+      if (remaining > 0) {
+        procStatus.textContent = 'Encoding... ~' + fmtSecs(remaining) + ' left';
+      } else {
+        procStatus.textContent = 'Encoding... almost done';
+      }
     }, 500);
 
+    // Animate to 95% over estimated time, then slowly creep toward 99 so it never freezes
     ticker(95, encMs, 'Encoding...');
+    const creepTimer = setTimeout(() => {
+      ticker(99, encMs * 0.8, 'Encoding... almost done');
+    }, encMs);
     log('Encoding...');
 
     await ffmpeg.run(
@@ -472,8 +480,9 @@ processBtn.addEventListener('click', async () => {
     );
 
     clearInterval(countdownTimer);
+    clearTimeout(creepTimer);
 
-    // 95 -> 100%: finalize
+    // -> 100%: finalize
     ticker(100, 900, 'Finalizing...');
     log('Finalizing...');
     const data = ffmpeg.FS('readFile', outputName);
