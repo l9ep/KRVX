@@ -213,37 +213,38 @@ const { createFFmpeg, fetchFile } = FFmpeg;
 const PRESETS = {
   tiktok:   { res: '-2:2160', crf: '15', bitrate: '50M', audio: '320k', label: '4K · 50Mbps' },
   balanced: { res: '-2:1440', crf: '18', bitrate: '25M', audio: '192k', label: '2K · 25Mbps' },
-  ultra:    { res: '-2:2160', crf: '12', bitrate: '80M', audio: '320k', label: '4K · 80Mbps' }
+  ultra:    { res: '-2:2160', crf: '10', bitrate: '80M', audio: '320k', label: '4K · 80Mbps' }
 };
 
 let ffmpeg = null;
 let selectedFile = null;
 let selectedPreset = 'tiktok';
 let outputUrl = null;
+let progressTimer = null;
 
-const page1      = document.getElementById('page1');
-const page2      = document.getElementById('page2');
-const page3      = document.getElementById('page3');
-const page4      = document.getElementById('page4');
-const fileInput  = document.getElementById('fileInput');
-const browseBtn  = document.getElementById('browseBtn');
-const dropZone   = document.getElementById('dropZone');
-const backBtn    = document.getElementById('backBtn');
-const fileInfoName = document.getElementById('fileInfoName');
-const fileInfoSize = document.getElementById('fileInfoSize');
-const processBtn = document.getElementById('processBtn');
-const procStatus = document.getElementById('procStatus');
-const procPct    = document.getElementById('procPct');
-const procFill   = document.getElementById('procFill');
-const procLog    = document.getElementById('procLog');
-const resultCard = document.getElementById('resultCard');
-const resultSub  = document.getElementById('resultSub');
-const downloadBtn= document.getElementById('downloadBtn');
-const resTag     = document.getElementById('resTag');
-const againBtn   = document.getElementById('againBtn');
-const errorCard  = document.getElementById('errorCard');
-const errorBody  = document.getElementById('errorBody');
-const retryBtn   = document.getElementById('retryBtn');
+const page1       = document.getElementById('page1');
+const page2       = document.getElementById('page2');
+const page3       = document.getElementById('page3');
+const page4       = document.getElementById('page4');
+const fileInput   = document.getElementById('fileInput');
+const browseBtn   = document.getElementById('browseBtn');
+const dropZone    = document.getElementById('dropZone');
+const backBtn     = document.getElementById('backBtn');
+const fileInfoName= document.getElementById('fileInfoName');
+const fileInfoSize= document.getElementById('fileInfoSize');
+const processBtn  = document.getElementById('processBtn');
+const procStatus  = document.getElementById('procStatus');
+const procPct     = document.getElementById('procPct');
+const procFill    = document.getElementById('procFill');
+const procLog     = document.getElementById('procLog');
+const resultCard  = document.getElementById('resultCard');
+const resultSub   = document.getElementById('resultSub');
+const downloadBtn = document.getElementById('downloadBtn');
+const resTag      = document.getElementById('resTag');
+const againBtn    = document.getElementById('againBtn');
+const errorCard   = document.getElementById('errorCard');
+const errorBody   = document.getElementById('errorBody');
+const retryBtn    = document.getElementById('retryBtn');
 
 function formatBytes(b) {
   return b < 1048576 ? (b/1024).toFixed(1)+' KB' : (b/1048576).toFixed(1)+' MB';
@@ -302,14 +303,12 @@ backBtn.addEventListener('click', () => {
   goPage(1);
 });
 
-function resetToPage1() {
+againBtn.addEventListener('click', () => {
   fileInput.value = '';
   if (outputUrl) { URL.revokeObjectURL(outputUrl); outputUrl = null; }
   selectedFile = null;
   goPage(1);
-}
-
-againBtn.addEventListener('click', resetToPage1);
+});
 retryBtn.addEventListener('click', () => goPage(2));
 
 function log(msg) {
@@ -317,61 +316,85 @@ function log(msg) {
   procLog.scrollTop = procLog.scrollHeight;
 }
 
-function setProgress(pct, status) {
-  const clamped = Math.min(Math.max(pct, 0), 100);
+// Smoothly animate progress from current value toward a target, never going backward
+let currentPct = 0;
+function setProgress(target, status) {
+  if (target > currentPct) currentPct = target;
+  const clamped = Math.min(Math.max(currentPct, 0), 100);
   procFill.style.width = clamped + '%';
   procPct.textContent = Math.round(clamped) + '%';
   if (status) procStatus.textContent = status;
 }
 
+// Fake smooth progress ticker — crawls from `from` toward `to` over `ms` milliseconds
+function startFakeTicker(from, to, ms, statusMsg) {
+  if (progressTimer) clearInterval(progressTimer);
+  currentPct = from;
+  const steps = ms / 200;
+  const increment = (to - from) / steps;
+  progressTimer = setInterval(() => {
+    currentPct = Math.min(currentPct + increment, to);
+    procFill.style.width = currentPct + '%';
+    procPct.textContent = Math.round(currentPct) + '%';
+    if (statusMsg) procStatus.textContent = statusMsg;
+    if (currentPct >= to) {
+      clearInterval(progressTimer);
+      progressTimer = null;
+    }
+  }, 200);
+}
+
+function stopTicker() {
+  if (progressTimer) { clearInterval(progressTimer); progressTimer = null; }
+}
+
 async function loadFFmpeg() {
   if (ffmpeg) return;
-  // Fake progress ticker while engine loads (can take 5–15s)
-  let fakePct = 0;
-  const ticker = setInterval(() => {
-    fakePct = Math.min(fakePct + 1, 18);
-    setProgress(fakePct, 'Loading engine...');
-  }, 300);
-
   ffmpeg = createFFmpeg({
     log: true,
     logger: ({ message }) => log(message),
-    progress: ({ ratio }) => {
-      if (ratio > 0) setProgress(20 + ratio * 75, 'Encoding...');
-    },
     corePath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
   });
-
   await ffmpeg.load();
-  clearInterval(ticker);
-  log('Engine ready.');
 }
 
 processBtn.addEventListener('click', async () => {
   if (!selectedFile) return;
   procLog.innerHTML = '';
-  setProgress(0, 'Starting...');
+  currentPct = 0;
   resultCard.style.display = 'block';
   errorCard.style.display = 'none';
   goPage(3);
 
   try {
+    // Phase 1: load engine (0 → 15%), estimate 8 seconds
+    startFakeTicker(0, 15, 8000, 'Loading engine...');
+    log('Loading engine...');
     await loadFFmpeg();
+    stopTicker();
+    log('Engine ready.');
+
     const p = PRESETS[selectedPreset];
     const ext = selectedFile.name.split('.').pop().toLowerCase() || 'mp4';
     const inputName = 'input.' + ext;
     const outputName = 'output.mp4';
 
-    setProgress(19, 'Reading file...');
+    // Phase 2: read file (15 → 20%), estimate 2 seconds
+    startFakeTicker(15, 20, 2000, 'Reading file...');
     log('Reading file...');
     ffmpeg.FS('writeFile', inputName, await fetchFile(selectedFile));
+    stopTicker();
 
-    setProgress(20, 'Encoding...');
-    log('Running FFmpeg...');
+    // Phase 3: encoding (20 → 95%)
+    // Estimate encode time: ~1 second per MB of input at normal speed on mobile
+    const fileMB = selectedFile.size / 1048576;
+    const estimatedMs = Math.max(fileMB * 1200, 5000);
+    startFakeTicker(20, 95, estimatedMs, 'Encoding...');
+    log('Encoding video...');
 
     await ffmpeg.run(
       '-i', inputName,
-      '-vf', `scale=${p.res}:flags=lanczos,unsharp=5:5:1.0:3:3:0.5`,
+      '-vf', `scale=${p.res}:flags=lanczos,unsharp=5:5:1.5:3:3:0.8`,
       '-c:v', 'libx264',
       '-crf', p.crf,
       '-preset', 'fast',
@@ -384,13 +407,16 @@ processBtn.addEventListener('click', async () => {
       '-movflags', '+faststart',
       outputName
     );
+    stopTicker();
 
-    setProgress(97, 'Finalizing...');
+    // Phase 4: finalize (95 → 100%)
+    startFakeTicker(95, 100, 1000, 'Finalizing...');
     log('Finalizing...');
     const data = ffmpeg.FS('readFile', outputName);
     const blob = new Blob([data.buffer], { type: 'video/mp4' });
     if (outputUrl) URL.revokeObjectURL(outputUrl);
     outputUrl = URL.createObjectURL(blob);
+    stopTicker();
 
     const outMB = (blob.size / 1048576).toFixed(1);
     resultSub.textContent = p.label + ' · ' + outMB + ' MB — ready to upload';
@@ -405,15 +431,21 @@ processBtn.addEventListener('click', async () => {
       document.body.removeChild(a);
     };
 
-    setProgress(100, 'Done');
+    currentPct = 100;
+    procFill.style.width = '100%';
+    procPct.textContent = '100%';
+    procStatus.textContent = 'Done!';
+
     resultCard.style.display = 'block';
     errorCard.style.display = 'none';
-    goPage(4);
+
+    setTimeout(() => goPage(4), 400);
 
     try { ffmpeg.FS('unlink', inputName); } catch(e) {}
     try { ffmpeg.FS('unlink', outputName); } catch(e) {}
 
   } catch (err) {
+    stopTicker();
     errorBody.textContent = err.message || 'Unknown error. Check your browser console.';
     resultCard.style.display = 'none';
     errorCard.style.display = 'block';
