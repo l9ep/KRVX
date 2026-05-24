@@ -53,41 +53,48 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
 .process-btn{display:block;width:100%;padding:18px;background:linear-gradient(135deg,var(--p3),var(--p));color:#fff;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;letter-spacing:.05em;cursor:pointer;transition:all .25s}
 .process-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(155,48,255,.4)}
 
-/* PAGE 3 — Processing */
-.page3-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center}
-.proc-icon{width:80px;height:80px;margin:0 auto 28px;position:relative}
-.proc-ring{width:80px;height:80px;border-radius:50%;border:3px solid rgba(155,48,255,.15);border-top-color:var(--p2);animation:spin 1s linear infinite;position:absolute;top:0;left:0}
-.proc-ring2{width:80px;height:80px;border-radius:50%;border:3px solid transparent;border-bottom-color:var(--p3);animation:spin 1.5s linear infinite reverse;position:absolute;top:0;left:0}
+/* PAGE 3 - Processing */
+.page3-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center}
+.proc-ring-wrap{width:90px;height:90px;margin:0 auto 28px;position:relative}
+.proc-ring{position:absolute;inset:0;border-radius:50%;border:3px solid rgba(155,48,255,.12);border-top-color:var(--p2);animation:spin 1s linear infinite}
+.proc-ring2{position:absolute;inset:0;border-radius:50%;border:3px solid transparent;border-bottom-color:var(--p3);animation:spin 1.6s linear infinite reverse}
 @keyframes spin{to{transform:rotate(360deg)}}
-.proc-title{font-size:24px;font-weight:800;margin-bottom:8px}
-.proc-status{font-size:13px;color:var(--p2);font-family:'DM Mono',monospace;margin-bottom:32px;min-height:20px}
-.proc-bar-wrap{width:100%;max-width:320px;margin:0 auto 12px}
+.proc-title{font-size:26px;font-weight:800;margin-bottom:6px}
+.proc-status{font-size:12px;color:var(--p2);font-family:'DM Mono',monospace;margin-bottom:28px;min-height:18px}
+.proc-bar-wrap{width:100%;max-width:300px;margin:0 auto 10px}
 .proc-bar-top{display:flex;justify-content:space-between;margin-bottom:8px}
 .proc-bar-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted)}
-.proc-bar-pct{font-size:11px;font-family:'DM Mono',monospace;color:var(--p2)}
-.proc-bar{height:6px;background:rgba(155,48,255,.15);border-radius:6px;overflow:hidden;width:100%}
-.proc-fill{height:100%;background:linear-gradient(90deg,var(--p3),var(--p2));border-radius:6px;width:0%;transition:width .4s ease}
-.proc-log{width:100%;max-width:320px;margin:16px auto 0;background:var(--bg);border:1px solid rgba(155,48,255,.1);border-radius:8px;padding:10px 14px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);height:64px;overflow-y:auto;line-height:1.6;text-align:left}
+.proc-bar-pct{font-size:11px;font-family:'DM Mono',monospace;color:var(--p2);font-weight:700}
+.proc-bar{height:6px;background:rgba(155,48,255,.12);border-radius:6px;overflow:hidden}
+.proc-fill{height:100%;background:linear-gradient(90deg,var(--p3),var(--p2));border-radius:6px;width:0%;transition:width .35s ease}
+.proc-log{width:100%;max-width:300px;margin:14px auto 0;background:rgba(155,48,255,.04);border:1px solid rgba(155,48,255,.1);border-radius:8px;padding:10px 14px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);height:60px;overflow-y:auto;line-height:1.6;text-align:left}
 .proc-log::-webkit-scrollbar{width:3px}
 .proc-log::-webkit-scrollbar-thumb{background:var(--p3);border-radius:4px}
 
-/* PAGE 4 — Result / Error */
-.result-card{background:linear-gradient(135deg,rgba(155,48,255,.08),rgba(106,15,214,.05));border:1px solid rgba(155,48,255,.3);border-radius:16px;padding:36px 28px;text-align:center}
-.result-icon{font-size:48px;margin-bottom:16px}
-.result-title{font-size:22px;font-weight:800;color:var(--p2);margin-bottom:6px}
-.result-sub{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:28px}
-.download-btn{display:inline-flex;align-items:center;gap:8px;padding:16px 36px;background:var(--p);color:#fff;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;border:none;transition:all .2s}
-.download-btn:hover{background:var(--p2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(155,48,255,.4)}
-.platform-tags{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
-.ptag{padding:4px 10px;border:1px solid rgba(155,48,255,.3);border-radius:20px;font-size:10px;font-family:'DM Mono',monospace;color:var(--muted)}
-.again-btn{display:block;margin:20px auto 0;background:none;border:none;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;cursor:pointer;transition:color .2s}
-.again-btn:hover{color:var(--p2)}
-.error-card{background:rgba(255,77,109,.06);border:1px solid rgba(255,77,109,.25);border-radius:16px;padding:36px 28px;text-align:center}
-.error-icon{font-size:40px;margin-bottom:16px}
-.error-title{font-size:18px;font-weight:800;color:#ff4d6d;margin-bottom:8px}
-.error-body{font-size:12px;font-family:'DM Mono',monospace;color:#ff4d6d;opacity:.8;margin-bottom:24px;line-height:1.6}
-.retry-btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:rgba(255,77,109,.15);color:#ff4d6d;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;border:1px solid rgba(255,77,109,.3);transition:all .2s}
-.retry-btn:hover{background:rgba(255,77,109,.25)}
+/* PAGE 4 - Download */
+.dl-page{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:20px}
+.dl-icon{font-size:56px;margin-bottom:20px}
+.dl-title{font-size:28px;font-weight:800;margin-bottom:6px}
+.dl-sub{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:32px;line-height:1.6}
+.dl-card{width:100%;background:rgba(155,48,255,.06);border:1px solid rgba(155,48,255,.2);border-radius:16px;padding:24px;margin-bottom:24px}
+.dl-stat-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(155,48,255,.08)}
+.dl-stat-row:last-child{border-bottom:none}
+.dl-stat-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted)}
+.dl-stat-val{font-size:12px;font-family:'DM Mono',monospace;color:var(--p2);font-weight:700}
+.dl-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:18px;background:linear-gradient(135deg,var(--p3),var(--p));color:#fff;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;letter-spacing:.05em;cursor:pointer;transition:all .25s;margin-bottom:14px}
+.dl-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(155,48,255,.4)}
+.dl-again{display:block;width:100%;padding:14px;background:none;border:1px solid rgba(155,48,255,.2);border-radius:12px;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;cursor:pointer;transition:all .2s}
+.dl-again:hover{border-color:var(--p);color:var(--p2)}
+.platform-tags{display:flex;gap:8px;justify-content:center;margin-bottom:24px;flex-wrap:wrap}
+.ptag{padding:4px 10px;border:1px solid rgba(155,48,255,.25);border-radius:20px;font-size:10px;font-family:'DM Mono',monospace;color:var(--muted)}
+
+/* PAGE 5 - Error */
+.err-page{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:20px}
+.err-icon{font-size:48px;margin-bottom:16px}
+.err-title{font-size:22px;font-weight:800;color:#ff4d6d;margin-bottom:8px}
+.err-body{font-size:12px;font-family:'DM Mono',monospace;color:#ff4d6d;opacity:.75;margin-bottom:28px;line-height:1.6;max-width:320px}
+.err-retry{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:rgba(255,77,109,.12);color:#ff4d6d;border:1px solid rgba(255,77,109,.3);border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s}
+.err-retry:hover{background:rgba(255,77,109,.22)}
 
 @media(max-width:480px){.wrap{padding:32px 16px 60px}}
 </style>
@@ -113,8 +120,6 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
   <!-- PAGE 2: Settings -->
   <div class="page" id="page2">
     <button class="back-btn" id="backBtn">← back</button>
-
-    <!-- File info row instead of video preview -->
     <div class="file-info">
       <div class="file-info-icon">🎬</div>
       <div>
@@ -122,9 +127,23 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
         <div class="file-info-size" id="fileInfoSize">0 MB</div>
       </div>
     </div>
-
     <div class="section-label">Pick a method</div>
     <div class="presets">
+
+      <div class="preset" data-preset="fast">
+        <div class="preset-top">
+          <div class="preset-name">Fast</div>
+          <div class="preset-badge">Quickest</div>
+        </div>
+        <div class="preset-desc">1080p sharp output using ultrafast encoding. Processes in a fraction of the time. Great when you need it done quick and still want it to look good.</div>
+        <div class="preset-tags">
+          <div class="preset-tag">1080p</div>
+          <div class="preset-tag">12Mbps</div>
+          <div class="preset-tag">Ultrafast</div>
+          <div class="preset-tag">192k audio</div>
+        </div>
+      </div>
+
       <div class="preset selected" data-preset="tiktok">
         <div class="preset-top">
           <div class="preset-name">TikTok / Reels</div>
@@ -132,9 +151,13 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
         </div>
         <div class="preset-desc">Upscales to 4K with max sharpness and high bitrate. Best for short clips going on TikTok or Instagram Reels. Audio preserved at 320kbps.</div>
         <div class="preset-tags">
-          <div class="preset-tag">4K</div><div class="preset-tag">50Mbps</div><div class="preset-tag">Lanczos</div><div class="preset-tag">320k audio</div>
+          <div class="preset-tag">4K</div>
+          <div class="preset-tag">50Mbps</div>
+          <div class="preset-tag">Lanczos</div>
+          <div class="preset-tag">320k audio</div>
         </div>
       </div>
+
       <div class="preset" data-preset="balanced">
         <div class="preset-top">
           <div class="preset-name">Balanced</div>
@@ -142,9 +165,13 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
         </div>
         <div class="preset-desc">2K output with good quality and a smaller file size. Good when you want quality without the video being too large to send or upload.</div>
         <div class="preset-tags">
-          <div class="preset-tag">2K</div><div class="preset-tag">25Mbps</div><div class="preset-tag">Lanczos</div><div class="preset-tag">192k audio</div>
+          <div class="preset-tag">2K</div>
+          <div class="preset-tag">25Mbps</div>
+          <div class="preset-tag">Lanczos</div>
+          <div class="preset-tag">192k audio</div>
         </div>
       </div>
+
       <div class="preset" data-preset="ultra">
         <div class="preset-top">
           <div class="preset-name">Ultra</div>
@@ -152,23 +179,26 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
         </div>
         <div class="preset-desc">Near-lossless 4K with the highest bitrate. Use this when quality matters above everything else. File will be large but will survive any platform compression.</div>
         <div class="preset-tags">
-          <div class="preset-tag">4K</div><div class="preset-tag">80Mbps</div><div class="preset-tag">Lanczos</div><div class="preset-tag">320k audio</div>
+          <div class="preset-tag">4K</div>
+          <div class="preset-tag">80Mbps</div>
+          <div class="preset-tag">Lanczos</div>
+          <div class="preset-tag">320k audio</div>
         </div>
       </div>
-    </div>
 
+    </div>
     <button class="process-btn" id="processBtn">UPSCALE VIDEO</button>
   </div>
 
   <!-- PAGE 3: Processing -->
   <div class="page" id="page3">
     <div class="page3-inner">
-      <div class="proc-icon">
+      <div class="proc-ring-wrap">
         <div class="proc-ring"></div>
         <div class="proc-ring2"></div>
       </div>
-      <div class="proc-title">Processing...</div>
-      <div class="proc-status" id="procStatus">Loading engine...</div>
+      <div class="proc-title">Processing</div>
+      <div class="proc-status" id="procStatus">Starting...</div>
       <div class="proc-bar-wrap">
         <div class="proc-bar-top">
           <span class="proc-bar-label">Progress</span>
@@ -180,85 +210,104 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
     </div>
   </div>
 
-  <!-- PAGE 4: Result or Error -->
+  <!-- PAGE 4: Download -->
   <div class="page" id="page4">
-    <!-- Result -->
-    <div class="result-card" id="resultCard">
-      <div class="result-icon">✦</div>
-      <div class="result-title">Done. Upload it.</div>
-      <div class="result-sub" id="resultSub"></div>
-      <button class="download-btn" id="downloadBtn">↓ Download Video</button>
+    <div class="dl-page">
+      <div class="dl-icon">✦</div>
+      <div class="dl-title">Done.</div>
+      <div class="dl-sub" id="dlSub">Your video is ready.</div>
       <div class="platform-tags">
         <div class="ptag">TikTok ready</div>
         <div class="ptag">Instagram ready</div>
         <div class="ptag" id="resTag">4K H.264</div>
       </div>
-      <button class="again-btn" id="againBtn">process another →</button>
+      <div class="dl-card">
+        <div class="dl-stat-row">
+          <span class="dl-stat-label">Method</span>
+          <span class="dl-stat-val" id="dlMethod">—</span>
+        </div>
+        <div class="dl-stat-row">
+          <span class="dl-stat-label">Output size</span>
+          <span class="dl-stat-val" id="dlSize">—</span>
+        </div>
+        <div class="dl-stat-row">
+          <span class="dl-stat-label">Format</span>
+          <span class="dl-stat-val">MP4 · H.264 · AAC</span>
+        </div>
+      </div>
+      <button class="dl-btn" id="downloadBtn">↓ Save Video</button>
+      <button class="dl-again" id="againBtn">process another video</button>
     </div>
-    <!-- Error -->
-    <div class="error-card" id="errorCard" style="display:none">
-      <div class="error-icon">⚠</div>
-      <div class="error-title">Something went wrong</div>
-      <div class="error-body" id="errorBody"></div>
-      <button class="retry-btn" id="retryBtn">← try again</button>
+  </div>
+
+  <!-- PAGE 5: Error -->
+  <div class="page" id="page5">
+    <div class="err-page">
+      <div class="err-icon">⚠</div>
+      <div class="err-title">Something went wrong</div>
+      <div class="err-body" id="errorBody">Unknown error.</div>
+      <button class="err-retry" id="retryBtn">← try again</button>
     </div>
   </div>
 
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
 <script>
 const { createFFmpeg, fetchFile } = FFmpeg;
 
 const PRESETS = {
-  tiktok:   { res: '-2:2160', crf: '15', bitrate: '50M', audio: '320k', label: '4K · 50Mbps' },
-  balanced: { res: '-2:1440', crf: '18', bitrate: '25M', audio: '192k', label: '2K · 25Mbps' },
-  ultra:    { res: '-2:2160', crf: '10', bitrate: '80M', audio: '320k', label: '4K · 80Mbps' }
+  fast:     { res: '-2:1080', crf: '20', bitrate: '12M', audio: '192k', speed: 'ultrafast', label: 'Fast 1080p',  tag: '1080p H.264' },
+  tiktok:   { res: '-2:2160', crf: '15', bitrate: '50M', audio: '320k', speed: 'fast',      label: '4K 50Mbps',   tag: '4K H.264'   },
+  balanced: { res: '-2:1440', crf: '18', bitrate: '25M', audio: '192k', speed: 'fast',      label: '2K 25Mbps',   tag: '2K H.264'   },
+  ultra:    { res: '-2:2160', crf: '10', bitrate: '80M', audio: '320k', speed: 'fast',      label: '4K 80Mbps',   tag: '4K H.264'   }
 };
 
-let ffmpeg = null;
-let selectedFile = null;
+let ffmpeg        = null;
+let selectedFile  = null;
 let selectedPreset = 'tiktok';
-let outputUrl = null;
-let progressTimer = null;
+let outputUrl     = null;
+let tickerTimer   = null;
+let currentPct    = 0;
 
-const page1       = document.getElementById('page1');
-const page2       = document.getElementById('page2');
-const page3       = document.getElementById('page3');
-const page4       = document.getElementById('page4');
-const fileInput   = document.getElementById('fileInput');
-const browseBtn   = document.getElementById('browseBtn');
-const dropZone    = document.getElementById('dropZone');
-const backBtn     = document.getElementById('backBtn');
-const fileInfoName= document.getElementById('fileInfoName');
-const fileInfoSize= document.getElementById('fileInfoSize');
-const processBtn  = document.getElementById('processBtn');
-const procStatus  = document.getElementById('procStatus');
-const procPct     = document.getElementById('procPct');
-const procFill    = document.getElementById('procFill');
-const procLog     = document.getElementById('procLog');
-const resultCard  = document.getElementById('resultCard');
-const resultSub   = document.getElementById('resultSub');
-const downloadBtn = document.getElementById('downloadBtn');
-const resTag      = document.getElementById('resTag');
-const againBtn    = document.getElementById('againBtn');
-const errorCard   = document.getElementById('errorCard');
-const errorBody   = document.getElementById('errorBody');
-const retryBtn    = document.getElementById('retryBtn');
+const $ = id => document.getElementById(id);
+const page1      = $('page1');
+const page2      = $('page2');
+const page3      = $('page3');
+const page4      = $('page4');
+const page5      = $('page5');
+const fileInput  = $('fileInput');
+const browseBtn  = $('browseBtn');
+const dropZone   = $('dropZone');
+const backBtn    = $('backBtn');
+const fileInfoName = $('fileInfoName');
+const fileInfoSize = $('fileInfoSize');
+const processBtn = $('processBtn');
+const procStatus = $('procStatus');
+const procPct    = $('procPct');
+const procFill   = $('procFill');
+const procLog    = $('procLog');
+const dlSub      = $('dlSub');
+const dlMethod   = $('dlMethod');
+const dlSize     = $('dlSize');
+const resTag     = $('resTag');
+const downloadBtn= $('downloadBtn');
+const againBtn   = $('againBtn');
+const errorBody  = $('errorBody');
+const retryBtn   = $('retryBtn');
 
 function formatBytes(b) {
-  return b < 1048576 ? (b/1024).toFixed(1)+' KB' : (b/1048576).toFixed(1)+' MB';
+  return b < 1048576 ? (b / 1024).toFixed(1) + ' KB' : (b / 1048576).toFixed(1) + ' MB';
 }
 
 function goPage(n) {
-  [page1,page2,page3,page4].forEach((p,i) => p.classList.toggle('active', i+1===n));
-  window.scrollTo(0,0);
+  [page1, page2, page3, page4, page5].forEach((p, i) => p.classList.toggle('active', i + 1 === n));
+  window.scrollTo(0, 0);
 }
 
 function setFile(file) {
   if (!file) return;
   const ext = file.name.split('.').pop().toLowerCase();
-  const validExts = ['mp4','mov','avi','webm','mkv'];
+  const validExts = ['mp4', 'mov', 'avi', 'webm', 'mkv'];
   if (!file.type.startsWith('video/') && !validExts.includes(ext)) {
     alert('Please select a valid video file (MP4, MOV, AVI, WEBM).');
     return;
@@ -302,7 +351,6 @@ backBtn.addEventListener('click', () => {
   selectedFile = null;
   goPage(1);
 });
-
 againBtn.addEventListener('click', () => {
   fileInput.value = '';
   if (outputUrl) { URL.revokeObjectURL(outputUrl); outputUrl = null; }
@@ -316,36 +364,31 @@ function log(msg) {
   procLog.scrollTop = procLog.scrollHeight;
 }
 
-// Smoothly animate progress from current value toward a target, never going backward
-let currentPct = 0;
-function setProgress(target, status) {
-  if (target > currentPct) currentPct = target;
-  const clamped = Math.min(Math.max(currentPct, 0), 100);
-  procFill.style.width = clamped + '%';
-  procPct.textContent = Math.round(clamped) + '%';
-  if (status) procStatus.textContent = status;
-}
-
-// Fake smooth progress ticker — crawls from `from` toward `to` over `ms` milliseconds
-function startFakeTicker(from, to, ms, statusMsg) {
-  if (progressTimer) clearInterval(progressTimer);
-  currentPct = from;
-  const steps = ms / 200;
-  const increment = (to - from) / steps;
-  progressTimer = setInterval(() => {
-    currentPct = Math.min(currentPct + increment, to);
-    procFill.style.width = currentPct + '%';
-    procPct.textContent = Math.round(currentPct) + '%';
-    if (statusMsg) procStatus.textContent = statusMsg;
-    if (currentPct >= to) {
-      clearInterval(progressTimer);
-      progressTimer = null;
-    }
-  }, 200);
+// Smoothly animate bar from current position toward `to` over `ms` ms
+function ticker(to, ms, label) {
+  if (tickerTimer) clearInterval(tickerTimer);
+  const steps = Math.max(ms / 150, 10);
+  const inc = (to - currentPct) / steps;
+  if (label) procStatus.textContent = label;
+  tickerTimer = setInterval(() => {
+    currentPct = Math.min(currentPct + inc, to);
+    const v = Math.round(currentPct);
+    procFill.style.width = v + '%';
+    procPct.textContent = v + '%';
+    if (currentPct >= to) { clearInterval(tickerTimer); tickerTimer = null; }
+  }, 150);
 }
 
 function stopTicker() {
-  if (progressTimer) { clearInterval(progressTimer); progressTimer = null; }
+  if (tickerTimer) { clearInterval(tickerTimer); tickerTimer = null; }
+}
+
+function snapTo(pct, label) {
+  stopTicker();
+  currentPct = pct;
+  procFill.style.width = pct + '%';
+  procPct.textContent = pct + '%';
+  if (label) procStatus.textContent = label;
 }
 
 async function loadFFmpeg() {
@@ -360,18 +403,18 @@ async function loadFFmpeg() {
 
 processBtn.addEventListener('click', async () => {
   if (!selectedFile) return;
+
   procLog.innerHTML = '';
   currentPct = 0;
-  resultCard.style.display = 'block';
-  errorCard.style.display = 'none';
+  snapTo(0, 'Starting...');
   goPage(3);
 
   try {
-    // Phase 1: load engine (0 → 15%), estimate 8 seconds
-    startFakeTicker(0, 15, 8000, 'Loading engine...');
+    // 0 -> 15%: load engine (~8s)
+    ticker(15, 8000, 'Loading engine...');
     log('Loading engine...');
     await loadFFmpeg();
-    stopTicker();
+    snapTo(15, 'Engine ready');
     log('Engine ready.');
 
     const p = PRESETS[selectedPreset];
@@ -379,25 +422,26 @@ processBtn.addEventListener('click', async () => {
     const inputName = 'input.' + ext;
     const outputName = 'output.mp4';
 
-    // Phase 2: read file (15 → 20%), estimate 2 seconds
-    startFakeTicker(15, 20, 2000, 'Reading file...');
+    // 15 -> 20%: read file (~2s)
+    ticker(20, 2000, 'Reading file...');
     log('Reading file...');
     ffmpeg.FS('writeFile', inputName, await fetchFile(selectedFile));
-    stopTicker();
+    snapTo(20, 'Encoding...');
 
-    // Phase 3: encoding (20 → 95%)
-    // Estimate encode time: ~1 second per MB of input at normal speed on mobile
+    // 20 -> 98%: encode
+    // Fast preset is ~5x quicker than others due to ultrafast
     const fileMB = selectedFile.size / 1048576;
-    const estimatedMs = Math.max(fileMB * 1200, 5000);
-    startFakeTicker(20, 95, estimatedMs, 'Encoding...');
-    log('Encoding video...');
+    const speedMult = selectedPreset === 'fast' ? 0.25 : 1;
+    const encMs = Math.max(fileMB * 1200 * speedMult, 3000);
+    ticker(98, encMs, 'Encoding...');
+    log('Encoding with preset: ' + p.label);
 
     await ffmpeg.run(
       '-i', inputName,
-      '-vf', `scale=${p.res}:flags=lanczos,unsharp=5:5:1.5:3:3:0.8`,
+      '-vf', 'scale=' + p.res + ':flags=lanczos,unsharp=5:5:1.5:3:3:0.8',
       '-c:v', 'libx264',
       '-crf', p.crf,
-      '-preset', 'fast',
+      '-preset', p.speed,
       '-b:v', p.bitrate,
       '-profile:v', 'high',
       '-level', '5.1',
@@ -407,20 +451,26 @@ processBtn.addEventListener('click', async () => {
       '-movflags', '+faststart',
       outputName
     );
-    stopTicker();
 
-    // Phase 4: finalize (95 → 100%)
-    startFakeTicker(95, 100, 1000, 'Finalizing...');
+    // 98 -> 100%: finalize
+    snapTo(98, 'Finalizing...');
     log('Finalizing...');
     const data = ffmpeg.FS('readFile', outputName);
     const blob = new Blob([data.buffer], { type: 'video/mp4' });
     if (outputUrl) URL.revokeObjectURL(outputUrl);
     outputUrl = URL.createObjectURL(blob);
-    stopTicker();
 
+    ticker(100, 600, 'Done!');
+    await new Promise(r => setTimeout(r, 700));
+    snapTo(100, 'Done!');
+    log('Complete.');
+
+    // Populate download page
     const outMB = (blob.size / 1048576).toFixed(1);
-    resultSub.textContent = p.label + ' · ' + outMB + ' MB — ready to upload';
-    resTag.textContent = p.res.includes('2160') ? '4K H.264' : '2K H.264';
+    dlSub.textContent = 'Processed with ' + p.label + ' — ready to upload';
+    dlMethod.textContent = p.label;
+    dlSize.textContent = outMB + ' MB';
+    resTag.textContent = p.tag;
 
     downloadBtn.onclick = () => {
       const a = document.createElement('a');
@@ -431,25 +481,15 @@ processBtn.addEventListener('click', async () => {
       document.body.removeChild(a);
     };
 
-    currentPct = 100;
-    procFill.style.width = '100%';
-    procPct.textContent = '100%';
-    procStatus.textContent = 'Done!';
-
-    resultCard.style.display = 'block';
-    errorCard.style.display = 'none';
-
-    setTimeout(() => goPage(4), 400);
-
     try { ffmpeg.FS('unlink', inputName); } catch(e) {}
     try { ffmpeg.FS('unlink', outputName); } catch(e) {}
+
+    setTimeout(() => goPage(4), 400);
 
   } catch (err) {
     stopTicker();
     errorBody.textContent = err.message || 'Unknown error. Check your browser console.';
-    resultCard.style.display = 'none';
-    errorCard.style.display = 'block';
-    goPage(4);
+    goPage(5);
     console.error(err);
   }
 });
