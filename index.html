@@ -106,7 +106,7 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
     <button class="back-btn" id="backBtn">← back</button>
 
     <div class="video-preview-wrap">
-      <video id="previewVideo" playsinline muted controls></video>
+      <video id="previewVideo" playsinline muted></video>
       <div class="file-badge" id="fileBadge"></div>
     </div>
 
@@ -319,7 +319,7 @@ async function loadFFmpeg() {
   ffmpeg.on('log', ({ message }) => log(message));
   ffmpeg.on('progress', ({ progress }) => setProgress(Math.min(10 + progress * 85, 95)));
   log('Loading engine...');
-  const base = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd';
+  const base = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core-st@0.12.6/dist/umd';
   await ffmpeg.load({
     coreURL: await toBlobURL(`${base}/ffmpeg-core.js`, 'text/javascript'),
     wasmURL: await toBlobURL(`${base}/ffmpeg-core.wasm`, 'application/wasm'),
