@@ -320,9 +320,9 @@
     <div class="drop-icon">🎬</div>
     <div class="drop-title">Drop your video here</div>
     <div class="drop-sub">MP4, MOV, AVI, MKV, WEBM</div>
-    <button class="browse-btn" onclick="document.getElementById('fileInput').click()">Browse File</button>
+    <label for="fileInput" class="browse-btn">Browse File</label>
     <div class="mobile-tip">📱 On mobile — tap Browse, then pick from your gallery or files app</div>
-    <input type="file" id="fileInput" accept="video/*">
+    <input type="file" id="fileInput" accept="video/mp4,video/quicktime,video/x-msvideo,video/webm,video/x-matroska,video/*">
   </div>
 
   <div class="file-preview" id="filePreview">
