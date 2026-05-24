@@ -97,6 +97,121 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
 .err-retry:hover{background:rgba(255,77,109,.22)}
 
 @media(max-width:480px){.wrap{padding:32px 16px 60px}}
+.cancel-btn{margin-top:20px;background:none;border:1px solid rgba(255,77,109,.25);color:rgba(255,77,109,.7);font-family:'DM Mono',monospace;font-size:12px;padding:10px 24px;border-radius:8px;cursor:pointer;transition:all .2s}
+.cancel-btn:hover{border-color:#ff4d6d;color:#ff4d6d;background:rgba(255,77,109,.08)}
+
+/* ── ANIMATIONS ── */
+
+/* Page transitions */
+.page{display:none;animation:none}
+.page.active{display:block;animation:pageIn .4s cubic-bezier(.22,1,.36,1) both}
+@keyframes pageIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* Logo float */
+.logo{animation:logoFloat 3.5s ease-in-out infinite}
+@keyframes logoFloat{0%,100%{letter-spacing:.3em;opacity:.9}50%{letter-spacing:.35em;opacity:1}}
+
+/* H1 fade in on load */
+h1{animation:headIn .7s cubic-bezier(.22,1,.36,1) .1s both}
+@keyframes headIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+.sub{animation:headIn .7s cubic-bezier(.22,1,.36,1) .2s both}
+
+/* Drop zone idle pulse */
+.drop-zone{animation:zonePulse 3s ease-in-out infinite}
+@keyframes zonePulse{0%,100%{border-color:rgba(155,48,255,.3);box-shadow:0 0 0 0 rgba(155,48,255,0)}50%{border-color:rgba(155,48,255,.55);box-shadow:0 0 18px 0 rgba(155,48,255,.08)}}
+.drop-zone:hover,.drop-zone.drag-over{animation:none}
+
+/* Drop icon bob */
+.drop-icon{animation:iconBob 2.8s ease-in-out infinite}
+@keyframes iconBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* Browse button shimmer */
+.browse-btn{overflow:hidden}
+.browse-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.18) 50%,transparent 60%);transform:translateX(-100%);transition:none}
+.browse-btn:hover::after{animation:btnShimmer .5s ease forwards}
+@keyframes btnShimmer{to{transform:translateX(200%)}}
+
+/* Preset cards stagger in */
+.preset{opacity:0;animation:presetIn .4s cubic-bezier(.22,1,.36,1) both}
+.preset:nth-child(1){animation-delay:.05s}
+.preset:nth-child(2){animation-delay:.12s}
+.preset:nth-child(3){animation-delay:.19s}
+.preset:nth-child(4){animation-delay:.26s}
+@keyframes presetIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* Preset shimmer sweep on hover */
+.preset::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(155,48,255,.08) 50%,transparent 70%);transform:translateX(-100%);pointer-events:none;border-radius:12px}
+.preset:hover::after{animation:presetShimmer .55s ease forwards}
+@keyframes presetShimmer{to{transform:translateX(150%)}}
+
+/* Preset selected spring scale */
+.preset{transition:all .2s,transform .25s cubic-bezier(.34,1.56,.64,1)}
+.preset.selected{transform:scale(1.02)}
+
+/* Process button pulse on idle */
+.process-btn{position:relative;overflow:hidden}
+.process-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.12) 50%,transparent 60%);transform:translateX(-100%)}
+.process-btn:hover::after{animation:btnShimmer .5s ease forwards}
+
+/* Progress bar shine */
+.proc-fill{position:relative;overflow:hidden}
+.proc-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:barShine 1.8s ease-in-out infinite}
+@keyframes barShine{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}
+
+/* Log lines fade in */
+.log-line{animation:logIn .25s ease both}
+@keyframes logIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
+
+/* Processing ring scale in */
+.proc-ring-wrap{animation:ringIn .5s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes ringIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+
+/* Done page: icon spin in */
+.dl-icon{display:inline-block;animation:iconSpin .6s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes iconSpin{from{opacity:0;transform:rotate(-180deg) scale(.4)}to{opacity:1;transform:rotate(0deg) scale(1)}}
+
+/* Done page: title fade up */
+.dl-title{animation:headIn .5s cubic-bezier(.22,1,.36,1) .15s both}
+.dl-sub{animation:headIn .5s cubic-bezier(.22,1,.36,1) .22s both}
+
+/* Platform tags stagger */
+.ptag{opacity:0;animation:presetIn .35s cubic-bezier(.22,1,.36,1) both}
+.ptag:nth-child(1){animation-delay:.3s}
+.ptag:nth-child(2){animation-delay:.38s}
+.ptag:nth-child(3){animation-delay:.46s}
+
+/* Stat rows stagger */
+.dl-stat-row{opacity:0;animation:statIn .35s cubic-bezier(.22,1,.36,1) both}
+.dl-stat-row:nth-child(1){animation-delay:.4s}
+.dl-stat-row:nth-child(2){animation-delay:.5s}
+.dl-stat-row:nth-child(3){animation-delay:.6s}
+@keyframes statIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+
+/* Download button fade up */
+.dl-btn{opacity:0;animation:headIn .4s cubic-bezier(.22,1,.36,1) .7s both}
+.dl-again{opacity:0;animation:headIn .4s cubic-bezier(.22,1,.36,1) .78s both}
+
+/* Download button ripple */
+.dl-btn{position:relative;overflow:hidden}
+.dl-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.15) 50%,transparent 60%);transform:translateX(-100%)}
+.dl-btn:hover::after{animation:btnShimmer .5s ease forwards}
+
+/* File info slide in */
+.file-info{animation:headIn .4s cubic-bezier(.22,1,.36,1) .05s both}
+
+/* Back button fade */
+.back-btn{animation:headIn .3s ease both}
+
+/* Cancel button fade in */
+.cancel-btn{animation:headIn .4s cubic-bezier(.22,1,.36,1) .3s both}
+
+/* Error page */
+.err-icon{animation:iconSpin .5s cubic-bezier(.34,1.56,.64,1) both}
+.err-title{animation:headIn .4s ease .1s both}
+.err-body{animation:headIn .4s ease .18s both}
+.err-retry{animation:headIn .4s ease .26s both;opacity:0}
+
 </style>
 </head>
 <body>
@@ -132,10 +247,10 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
 
       <div class="preset" data-preset="fast">
         <div class="preset-top">
-          <div class="preset-name">Fast</div>
+          <div class="preset-name">Crisp</div>
           <div class="preset-badge">Quickest</div>
         </div>
-        <div class="preset-desc">1080p sharp output using ultrafast encoding. Processes in a fraction of the time. Great when you need it done quick and still want it to look good.</div>
+        <div class="preset-desc">1440p sharp output at 120fps. Fast encode with no quality compromise. Best when you need it done quick and still want it looking clean.</div>
         <div class="preset-tags">
           <div class="preset-tag">1440p</div>
           <div class="preset-tag">40Mbps</div>
@@ -211,6 +326,7 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
         <div class="proc-bar"><div class="proc-fill" id="procFill"></div></div>
       </div>
       <div class="proc-log" id="procLog"></div>
+      <button class="cancel-btn" id="cancelBtn">✕ Cancel</button>
     </div>
   </div>
 
@@ -239,6 +355,7 @@ h1{font-size:clamp(42px,10vw,72px);font-weight:800;line-height:.95;letter-spacin
           <span class="dl-stat-val">MP4 · H.264 · AAC</span>
         </div>
       </div>
+      <video id="previewVideo" controls playsinline style="display:none;width:100%;border-radius:12px;margin-bottom:18px;background:#000;max-height:280px;object-fit:contain;border:1px solid rgba(155,48,255,.2)"></video>
       <button class="dl-btn" id="downloadBtn">↓ Save Video</button>
       <button class="dl-again" id="againBtn">process another video</button>
     </div>
@@ -272,6 +389,7 @@ let selectedPreset = 'tiktok';
 let outputUrl     = null;
 let tickerTimer   = null;
 let currentPct    = 0;
+let cancelled     = false;
 
 const $ = id => document.getElementById(id);
 const page1      = $('page1');
@@ -298,6 +416,8 @@ const downloadBtn= $('downloadBtn');
 const againBtn   = $('againBtn');
 const errorBody  = $('errorBody');
 const retryBtn   = $('retryBtn');
+const cancelBtn  = $('cancelBtn');
+const previewVideo = $('previewVideo');
 
 function formatBytes(b) {
   return b < 1048576 ? (b / 1024).toFixed(1) + ' KB' : (b / 1048576).toFixed(1) + ' MB';
@@ -364,7 +484,10 @@ againBtn.addEventListener('click', () => {
 retryBtn.addEventListener('click', () => goPage(2));
 
 function log(msg) {
-  procLog.innerHTML += msg + '\n';
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  line.textContent = msg;
+  procLog.appendChild(line);
   procLog.scrollTop = procLog.scrollHeight;
 }
 
@@ -410,9 +533,19 @@ function fmtSecs(s) {
   return Math.floor(s / 60) + 'm ' + Math.round(s % 60) + 's';
 }
 
+cancelBtn.addEventListener('click', () => {
+  cancelled = true;
+  stopTicker();
+  if (ffmpeg) { try { ffmpeg.exit(); } catch(e) {} ffmpeg = null; }
+  snapTo(0, 'Cancelled');
+  log('Cancelled.');
+  goPage(2);
+});
+
 processBtn.addEventListener('click', async () => {
   if (!selectedFile) return;
 
+  cancelled = false;
   procLog.innerHTML = '';
   currentPct = 0;
   snapTo(0, 'Starting...');
@@ -423,6 +556,7 @@ processBtn.addEventListener('click', async () => {
     ticker(15, 8000, 'Loading engine...');
     log('Loading engine...');
     await loadFFmpeg();
+    if (cancelled) return;
     snapTo(15, 'Engine ready');
     log('Engine ready.');
 
@@ -442,20 +576,18 @@ processBtn.addEventListener('click', async () => {
     ticker(20, 2000, 'Reading file...');
     log('Reading file...');
     ffmpeg.FS('writeFile', inputName, await fetchFile(selectedFile));
+    if (cancelled) return;
 
     // 20 -> 95%: encode with live countdown, then creep to 99 if still going
     const encStart = Date.now();
     let countdownTimer = setInterval(() => {
       const elapsed = (Date.now() - encStart) / 1000;
       const remaining = Math.max(encSecs - elapsed, 0);
-      if (remaining > 0) {
-        procStatus.textContent = 'Encoding... ~' + fmtSecs(remaining) + ' left';
-      } else {
-        procStatus.textContent = 'Encoding... almost done';
-      }
+      procStatus.textContent = remaining > 0
+        ? 'Encoding... ~' + fmtSecs(remaining) + ' left'
+        : 'Encoding... almost done';
     }, 500);
 
-    // Animate to 95% over estimated time, then slowly creep toward 99 so it never freezes
     ticker(95, encMs, 'Encoding...');
     const creepTimer = setTimeout(() => {
       ticker(99, encMs * 0.8, 'Encoding... almost done');
@@ -481,6 +613,7 @@ processBtn.addEventListener('click', async () => {
 
     clearInterval(countdownTimer);
     clearTimeout(creepTimer);
+    if (cancelled) return;
 
     // -> 100%: finalize
     ticker(100, 900, 'Finalizing...');
@@ -501,6 +634,10 @@ processBtn.addEventListener('click', async () => {
     dlSize.textContent = outMB + ' MB';
     resTag.textContent = p.tag;
 
+    // Wire up preview player
+    previewVideo.src = outputUrl;
+    previewVideo.style.display = 'block';
+
     downloadBtn.onclick = () => {
       const a = document.createElement('a');
       a.href = outputUrl;
@@ -516,6 +653,7 @@ processBtn.addEventListener('click', async () => {
     setTimeout(() => goPage(4), 400);
 
   } catch (err) {
+    if (cancelled) return;
     stopTicker();
     errorBody.textContent = err.message || 'Unknown error. Check your browser console.';
     goPage(5);
